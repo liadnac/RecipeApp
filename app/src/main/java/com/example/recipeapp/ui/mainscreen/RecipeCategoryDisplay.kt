@@ -46,7 +46,7 @@ fun CategoryGrid(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(items = categoryList, key = { category -> category }) { category ->
+        items(categoryList) { category ->
             CategoryCard(
                 category,
                 modifier = Modifier
@@ -55,6 +55,8 @@ fun CategoryGrid(
                     .aspectRatio(1.5f),
             )
         }
+
+
     }
 }
 
@@ -99,9 +101,10 @@ fun SubCategoryList(subCategoryList: List<SubCategory>) {
     }
 }
 
-val pancake: SubCategory = SubCategory(1, "Pancakes", 1)
-val popsicle: SubCategory = SubCategory(2, "Popsicles", 1)
-val kidsCategory: Category = Category(1, "Kids", listOf(pancake, popsicle))
+val pancake: SubCategory = SubCategory("Pancakes")
+val popsicle: SubCategory = SubCategory("Popsicles")
+val kidsCategory: Category = Category("Kids", listOf(pancake, popsicle))
+
 @Preview
 @Composable
 fun CategoryCardPreview() {

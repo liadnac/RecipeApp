@@ -1,64 +1,43 @@
 [
   {
-    "id": 1,
     "name": "Kids",
     "subCategoryList": [
       {
-        "id": 1,
-        "name": "Pancakes",
-        "categoryId": 1
+        "name": "Pancakes"
       },
       {
-        "id": 2,
-        "name": "Popsicles",
-        "categoryId": 1
+        "name": "Popsicles"
       }
     ]
   },
   {
-    "id": 2,
     "name": "Meals",
     "subCategoryList": [
       {
-        "id": 3,
-        "name": "Breakfast",
-        "categoryId": 2
+        "name": "Breakfast"
       },
       {
-        "id": 4,
-        "name": "Lunch",
-        "categoryId": 2
+        "name": "Lunch"
       },
       {
-        "id": 5,
-        "name": "Dinner",
-        "categoryId": 2
+        "name": "Dinner"
       }
     ]
   },
   {
-    "id": 3,
-    "name": "Baking",
+    "name":"Baking",
     "subCategoryList": [
       {
-        "id": 6,
-        "name": "Bread and dough",
-        "categoryId": 3
+        "name":"Bread and dough"
       },
       {
-        "id": 7,
-        "name": "Cookies and Brownies",
-        "categoryId": 3
+        "name":"Cookies and Brownies"
       },
       {
-        "id": 8,
-        "name": "Cake and Muffins",
-        "categoryId": 3
+        "name":"Cake and Muffins"
       },
       {
-        "id": 9,
-        "name": "Tarts and Pies",
-        "categoryId": 3
+        "name":"Tarts and Pies"
       }
     ]
   }
