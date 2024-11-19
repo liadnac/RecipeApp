@@ -1,12 +1,11 @@
 package com.example.recipeapp.ui.mainscreen
 
 
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -17,6 +16,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,7 +37,7 @@ import com.example.recipeapp.data.categoryList
 fun CategoryGrid(
     categoryList: List<Category>,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp),
+    contentPadding: PaddingValues = PaddingValues(4.dp),
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
@@ -49,10 +49,7 @@ fun CategoryGrid(
         items(categoryList) { category ->
             CategoryCard(
                 category,
-                modifier = Modifier
-                    .padding(4.dp)
-                    .fillMaxWidth()
-                    .aspectRatio(1.5f),
+                modifier = Modifier,
             )
         }
 
@@ -63,39 +60,56 @@ fun CategoryGrid(
 @Composable
 fun CategoryCard(category: Category, modifier: Modifier = Modifier) {
     var expanded by remember { mutableStateOf(false) }
-    Card(
-        modifier = modifier, elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .clickable(onClick = { expanded = !expanded })
+
+    Column {
+        Card(
+            modifier = modifier
                 .padding(16.dp)
                 .fillMaxWidth()
+                .animateContentSize(), // This is where the magic happens!
+            onClick = { expanded = !expanded },
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         ) {
-            Text(
-                category.name,
-                modifier = Modifier.padding(4.dp),
-                textAlign = TextAlign.Center
-            )
-            Icon(
-                Icons.Filled.KeyboardArrowDown,
-                contentDescription = "Show more",
-            )
-            if (expanded) {
-                SubCategoryList(category.subCategoryList)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    category.name,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(4.dp),
+                    textAlign = TextAlign.Center
+                )
+                if (expanded) {
+                    SubCategoryList(
+                        category.subCategoryList,
+                        modifier = Modifier.animateContentSize()
+                    )
+                }
+                Icon(
+                    Icons.Filled.KeyboardArrowDown,
+                    contentDescription = "Show more",
+                )
+
+
             }
         }
-
     }
+
 }
 
+
 @Composable
-fun SubCategoryList(subCategoryList: List<SubCategory>) {
-    Column {
+fun SubCategoryList(subCategoryList: List<SubCategory>, modifier: Modifier = Modifier) {
+    Column(modifier) {
         subCategoryList.forEach { subCategory ->
             Row {
-                Text(subCategory.name)
+                Text(
+                    subCategory.name,
+                    modifier = Modifier.padding(16.dp),
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
@@ -113,7 +127,6 @@ fun CategoryCardPreview() {
         kidsCategory, modifier = Modifier
             .padding(4.dp)
             .fillMaxWidth()
-            .aspectRatio(1.5f)
     )
 }
 

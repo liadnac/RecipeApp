@@ -1,6 +1,6 @@
 package com.example.recipeapp.ui
 
-import android.content.Context
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -31,7 +31,10 @@ fun RecipeApp(
             )
         }
     ) { contentPadding ->
-        CategoryGrid(categoryList, modifier.padding(contentPadding))
+        CategoryGrid(categoryList,
+            modifier
+                .padding(contentPadding)
+                .fillMaxSize())
 
     }
 }
