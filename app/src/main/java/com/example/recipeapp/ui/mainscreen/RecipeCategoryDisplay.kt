@@ -3,6 +3,7 @@ package com.example.recipeapp.ui.mainscreen
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,10 +17,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,7 +51,8 @@ fun CategoryGrid(
         modifier = modifier.padding(horizontal = 4.dp),
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
+
+        ) {
         items(categoryList) { category ->
             CategoryCard(
                 category,
@@ -92,6 +96,8 @@ fun CategoryCard(category: Category, modifier: Modifier = Modifier) {
                     SubCategoryList(
                         category.subCategoryList,
                         modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.primaryContainer)
                     )
                 }
                 IconButton(
@@ -117,8 +123,10 @@ fun CategoryCard(category: Category, modifier: Modifier = Modifier) {
 
 @Composable
 fun SubCategoryList(subCategoryList: List<SubCategory>, modifier: Modifier = Modifier) {
-    Column(modifier,
-            ) {
+    Column(
+        modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         subCategoryList.forEach { subCategory ->
             Row {
                 Text(
@@ -127,6 +135,7 @@ fun SubCategoryList(subCategoryList: List<SubCategory>, modifier: Modifier = Mod
                     textAlign = TextAlign.Center
                 )
             }
+            HorizontalDivider(modifier = Modifier)
         }
     }
 }
