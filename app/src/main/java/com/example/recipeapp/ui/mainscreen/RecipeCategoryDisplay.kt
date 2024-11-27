@@ -22,7 +22,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,9 +32,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.recipeapp.R
 import com.example.recipeapp.data.Category
 import com.example.recipeapp.data.SubCategory
 import com.example.recipeapp.data.categoryList
@@ -74,7 +75,7 @@ fun CategoryCard(category: Category, modifier: Modifier = Modifier) {
     Column {
         Card(
             modifier = modifier
-                .padding(16.dp)
+                .padding(dimensionResource(id = R.dimen.padding_medium))
                 .fillMaxWidth()
                 .animateContentSize(), // This is where the magic happens!
             onClick = { expanded = !expanded },
@@ -89,7 +90,7 @@ fun CategoryCard(category: Category, modifier: Modifier = Modifier) {
                 Text(
                     category.name,
                     style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(8.dp),
+                    modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)),
                     textAlign = TextAlign.Center
                 )
                 if (expanded) {
@@ -131,7 +132,7 @@ fun SubCategoryList(subCategoryList: List<SubCategory>, modifier: Modifier = Mod
             Row {
                 Text(
                     subCategory.name,
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
                     textAlign = TextAlign.Center
                 )
             }

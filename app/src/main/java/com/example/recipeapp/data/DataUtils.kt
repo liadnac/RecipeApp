@@ -20,3 +20,9 @@ fun categoryList(context: Context): MutableList<Category> {
     val type = object : TypeToken<List<Category>>() {}.type
     return Gson().fromJson(jsonFileString, type)
 }
+
+fun recipeList(context: Context): MutableList<Recipe> {
+    val jsonFileString = getJsonDataFromAsset(context = context, "recipe.json")
+    val type = object : TypeToken<List<Recipe>>() {}.type
+    return Gson().fromJson(jsonFileString, type)
+}

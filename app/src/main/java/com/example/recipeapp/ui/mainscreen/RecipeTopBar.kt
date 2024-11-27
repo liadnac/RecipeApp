@@ -36,7 +36,6 @@ fun RecipeTopBar(modifier: Modifier = Modifier,
                 modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_medium)),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -45,7 +44,7 @@ fun RecipeTopBar(modifier: Modifier = Modifier,
             IconButton(onClick = searchOnClick) {
                 Icon(
                     imageVector = Icons.Filled.Search,
-                    contentDescription = "Localized description"
+                    contentDescription = "Search button"
                 )
             }
         },
@@ -53,7 +52,7 @@ fun RecipeTopBar(modifier: Modifier = Modifier,
             IconButton(onClick = menuOnClick) {
                 Icon(
                     imageVector = Icons.Filled.Menu,
-                    contentDescription = "Localized description"
+                    contentDescription = "Menu button"
                 )
             }
         }
