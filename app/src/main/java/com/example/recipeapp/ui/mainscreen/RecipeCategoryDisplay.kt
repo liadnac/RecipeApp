@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.example.recipeapp.R
 import com.example.recipeapp.data.Category
 import com.example.recipeapp.data.SubCategory
-import com.example.recipeapp.data.categoryList
+import com.example.recipeapp.data.getCategoryFromJsonFile
 
 @Composable
 fun CategoryGrid(
@@ -72,53 +72,51 @@ fun CategoryCard(category: Category, modifier: Modifier = Modifier) {
         targetValue = if (expanded) 180f else 0f, label = ""
     )
 
-    Column {
-        Card(
-            modifier = modifier
-                .padding(dimensionResource(id = R.dimen.padding_medium))
+
+    Card(
+        modifier = modifier
+            .padding(dimensionResource(id = R.dimen.padding_medium))
+            .fillMaxWidth()
+            .animateContentSize(), // This is where the magic happens!
+        onClick = { expanded = !expanded },
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
                 .fillMaxWidth()
-                .animateContentSize(), // This is where the magic happens!
-            onClick = { expanded = !expanded },
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth()
-
-            ) {
-                Text(
-                    category.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)),
-                    textAlign = TextAlign.Center
-                )
-                if (expanded) {
-                    SubCategoryList(
-                        category.subCategoryList,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.primaryContainer)
-                    )
-                }
-                IconButton(
+            Text(
+                category.name,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)),
+                textAlign = TextAlign.Center
+            )
+            if (expanded) {
+                SubCategoryList(
+                    category.subCategoryList,
                     modifier = Modifier
-                        .alpha(0.2f)
-                        .rotate(rotationState),
-                    onClick = {
-                        expanded = !expanded
-                    }) {
-                    Icon(
-                        Icons.Filled.KeyboardArrowDown,
-                        contentDescription = "Show more",
-                    )
-                }
-
-
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                )
             }
+            IconButton(
+                modifier = Modifier
+                    .alpha(0.2f)
+                    .rotate(rotationState),
+                onClick = {
+                    expanded = !expanded
+                }) {
+                Icon(
+                    Icons.Filled.KeyboardArrowDown,
+                    contentDescription = "Show more",
+                )
+            }
+
+
         }
     }
-
 }
 
 
@@ -167,7 +165,7 @@ fun SubCategoryListPreview() {
 @Composable
 fun CategoryGridPreview() {
     val context = LocalContext.current
-    val categoryList: List<Category> = categoryList(context)
+    val categoryList: List<Category> = getCategoryFromJsonFile(context, "category.json")
     CategoryGrid(
         categoryList,
         contentPadding = PaddingValues(4.dp)

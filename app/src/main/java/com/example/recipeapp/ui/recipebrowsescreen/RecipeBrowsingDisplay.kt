@@ -5,33 +5,28 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.recipeapp.R
-import com.example.recipeapp.data.Category
 import com.example.recipeapp.data.Recipe
-import com.example.recipeapp.data.categoryList
-import com.example.recipeapp.data.recipeList
+import com.example.recipeapp.data.getRecipeFromJsonFile
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -64,8 +59,11 @@ fun RecipeCard(
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier,
-    ) {
+        modifier = modifier
+            .padding(dimensionResource(id = R.dimen.padding_small))
+            .fillMaxWidth(),
+
+        ) {
 
         Box {
             Image(
@@ -75,8 +73,11 @@ fun RecipeCard(
 
         }
         Row(
-            modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_small)),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .padding(horizontal = dimensionResource(R.dimen.padding_small))
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
         ) {
             Icon(
                 painterResource(R.drawable.ic_clock_svgrepo_com),
@@ -87,7 +88,8 @@ fun RecipeCard(
                 cookTimeFormater(recipe.cookTime),
                 modifier = Modifier.padding(
                     dimensionResource(R.dimen.padding_small)
-                ),
+                ).fillMaxWidth(),
+                overflow = TextOverflow.Visible,
                 style = MaterialTheme.typography.bodyLarge,
             )
         }
@@ -97,9 +99,8 @@ fun RecipeCard(
                 horizontal = dimensionResource(R.dimen.padding_medium),
                 vertical = dimensionResource(R.dimen.padding_small)
             ),
-            textAlign = TextAlign.Justify,
             overflow = TextOverflow.Visible,
-            style = MaterialTheme.typography.displaySmall,
+            style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onBackground
         )
     }
@@ -109,7 +110,7 @@ fun RecipeCard(
 fun cookTimeFormater(
     cookTime: Duration
 ): String {
-    var formatedCookTime: String = ""
+    var formatedCookTime = ""
     val splitCookTime = cookTime.toString().split(
         "h", "m"
     )
@@ -130,10 +131,14 @@ fun RecipeCardPreview() {
     RecipeCard(recipe)
 }
 
+
 @Preview
 @Composable
 fun RecipeBrowsingGridPreview() {
     val context = LocalContext.current
-    val recipeList: List<Recipe> = recipeList(context)
+    val recipeList: List<Recipe> = getRecipeFromJsonFile(
+        context,
+        fileName = "recipe.json"
+    )
     RecipeBrowsingGrid(recipeList)
 }
