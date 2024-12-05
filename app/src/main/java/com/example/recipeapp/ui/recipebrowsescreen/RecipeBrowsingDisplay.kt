@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -36,13 +37,15 @@ import kotlin.time.toDuration
 fun RecipeBrowsingGrid(
     recipeList: List<Recipe>,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(4.dp),
+    contentPadding: PaddingValues = PaddingValues(8.dp),
 ) {
+    val gridState = rememberLazyGridState()
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 128.dp),
-        modifier = modifier.padding(horizontal = 4.dp),
+        state = gridState,
+        columns = GridCells.Adaptive(minSize = 132.dp),
+        modifier = modifier,
         contentPadding = contentPadding,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.SpaceAround,
     ) {
         items(recipeList) { recipe ->
             RecipeCard(
@@ -86,9 +89,11 @@ fun RecipeCard(
             )
             Text(
                 cookTimeFormater(recipe.cookTime),
-                modifier = Modifier.padding(
-                    dimensionResource(R.dimen.padding_small)
-                ).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(
+                        dimensionResource(R.dimen.padding_small)
+                    )
+                    .fillMaxWidth(),
                 overflow = TextOverflow.Visible,
                 style = MaterialTheme.typography.bodyLarge,
             )
