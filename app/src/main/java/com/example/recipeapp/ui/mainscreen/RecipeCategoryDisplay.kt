@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +45,7 @@ import com.example.recipeapp.data.getCategoryFromJsonFile
 @Composable
 fun CategoryGrid(
     categoryList: List<Category>,
+    subCategoryOnClick: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(4.dp),
 ) {
@@ -58,6 +60,7 @@ fun CategoryGrid(
             CategoryCard(
                 category,
                 modifier = Modifier,
+                subCategoryOnClick = subCategoryOnClick
             )
         }
 
@@ -66,7 +69,11 @@ fun CategoryGrid(
 }
 
 @Composable
-fun CategoryCard(category: Category, modifier: Modifier = Modifier) {
+fun CategoryCard(
+    category: Category,
+    subCategoryOnClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     var expanded by remember { mutableStateOf(false) }
     val rotationState by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f, label = ""
@@ -82,9 +89,7 @@ fun CategoryCard(category: Category, modifier: Modifier = Modifier) {
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
+            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()
 
         ) {
             Text(
@@ -96,18 +101,17 @@ fun CategoryCard(category: Category, modifier: Modifier = Modifier) {
             if (expanded) {
                 SubCategoryList(
                     category.subCategoryList,
+                    subCategoryOnClick = subCategoryOnClick,
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.primaryContainer)
                 )
             }
-            IconButton(
-                modifier = Modifier
-                    .alpha(0.2f)
-                    .rotate(rotationState),
-                onClick = {
-                    expanded = !expanded
-                }) {
+            IconButton(modifier = Modifier
+                .alpha(0.2f)
+                .rotate(rotationState), onClick = {
+                expanded = !expanded
+            }) {
                 Icon(
                     Icons.Filled.KeyboardArrowDown,
                     contentDescription = "Show more",
@@ -121,20 +125,31 @@ fun CategoryCard(category: Category, modifier: Modifier = Modifier) {
 
 
 @Composable
-fun SubCategoryList(subCategoryList: List<SubCategory>, modifier: Modifier = Modifier) {
+fun SubCategoryList(
+    subCategoryList: List<SubCategory>,
+    subCategoryOnClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
-        modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier, horizontalAlignment = Alignment.CenterHorizontally
     ) {
         subCategoryList.forEach { subCategory ->
-            Row {
-                Text(
-                    subCategory.name,
-                    modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
-                    textAlign = TextAlign.Center
-                )
-            }
             HorizontalDivider(modifier = Modifier)
+            Row {
+                TextButton(
+                    onClick = subCategoryOnClick,
+                    modifier = Modifier.padding(
+                        dimensionResource(id = R.dimen.padding_medium)
+                    ),
+                ) {
+                    Text(
+                        subCategory.name, textAlign = TextAlign.Center
+                    )
+                }
+
+
+            }
+
         }
     }
 }
@@ -148,7 +163,9 @@ val kidsCategory: Category = Category("Kids", listOf(pancake, popsicle))
 fun CategoryCardPreview() {
 
     CategoryCard(
-        kidsCategory, modifier = Modifier
+        kidsCategory,
+        subCategoryOnClick = {},
+        modifier = Modifier
             .padding(4.dp)
             .fillMaxWidth()
     )
@@ -158,7 +175,7 @@ fun CategoryCardPreview() {
 @Composable
 fun SubCategoryListPreview() {
     val subCategoryList: List<SubCategory> = listOf(pancake, popsicle)
-    SubCategoryList(subCategoryList)
+    SubCategoryList(subCategoryList, {})
 }
 
 @Preview
@@ -168,6 +185,7 @@ fun CategoryGridPreview() {
     val categoryList: List<Category> = getCategoryFromJsonFile(context, "category.json")
     CategoryGrid(
         categoryList,
+        subCategoryOnClick = {},
         contentPadding = PaddingValues(4.dp)
     )
 }

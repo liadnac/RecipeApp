@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.navigation.compose)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation (libs.gson)

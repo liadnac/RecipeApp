@@ -2,6 +2,8 @@ package com.example.recipeapp.ui.mainscreen
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -25,6 +27,8 @@ import com.example.recipeapp.R
 @Composable
 fun RecipeTopBar(modifier: Modifier = Modifier,
                  scrollBehavior: TopAppBarScrollBehavior,
+                 canNavigateBack: Boolean,
+                 navigateUp: () -> Unit,
                  searchOnClick: () -> Unit,
                  menuOnClick: () -> Unit) {
     CenterAlignedTopAppBar(
@@ -49,16 +53,28 @@ fun RecipeTopBar(modifier: Modifier = Modifier,
             }
         },
         navigationIcon = {
-            IconButton(onClick = menuOnClick) {
-                Icon(
-                    imageVector = Icons.Filled.Menu,
-                    contentDescription = "Menu button"
-                )
+            if (canNavigateBack) {
+                IconButton(onClick = navigateUp) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.back_button)
+                    )
+                }
             }
+                else {
+                    IconButton(onClick = menuOnClick) {
+                        Icon(
+                            imageVector = Icons.Filled.Menu,
+                            contentDescription = "Menu button"
+                        )
+                    }
+                }
+
         }
 
     )
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
@@ -67,6 +83,8 @@ fun TopBarPreview() {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     RecipeTopBar(
         scrollBehavior = scrollBehavior,
+        canNavigateBack = true,
+        navigateUp = {},
         searchOnClick = {},
         menuOnClick = {}
     )
