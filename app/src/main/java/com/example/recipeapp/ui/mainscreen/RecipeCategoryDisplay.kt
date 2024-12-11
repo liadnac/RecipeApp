@@ -3,13 +3,17 @@ package com.example.recipeapp.ui.mainscreen
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
@@ -32,8 +36,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -92,13 +98,27 @@ fun CategoryCard(
             horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()
 
         ) {
-            Text(
-                category.name,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)),
-                textAlign = TextAlign.Center
-            )
+            Box(
+
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.baking),
+                    contentDescription = "An image of the category",
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text(
+                    category.name,
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier
+                        .padding(dimensionResource(id = R.dimen.padding_small))
+                        .align(Alignment.BottomCenter),
+                    textAlign = TextAlign.Center,
+                    color = Color.DarkGray
+
+                    )
+            }
             if (expanded) {
+                Spacer(modifier = Modifier.size(24.dp))
                 SubCategoryList(
                     category.subCategoryList,
                     subCategoryOnClick = subCategoryOnClick,
@@ -106,6 +126,8 @@ fun CategoryCard(
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.primaryContainer)
                 )
+                HorizontalDivider()
+                Spacer(modifier = Modifier.size(24.dp))
             }
             IconButton(modifier = Modifier
                 .alpha(0.2f)
@@ -134,8 +156,10 @@ fun SubCategoryList(
         modifier, horizontalAlignment = Alignment.CenterHorizontally
     ) {
         subCategoryList.forEach { subCategory ->
-            HorizontalDivider(modifier = Modifier)
-            Row {
+            HorizontalDivider()
+            Row(
+                modifier = Modifier
+            ) {
                 TextButton(
                     onClick = subCategoryOnClick,
                     modifier = Modifier.padding(
@@ -143,13 +167,11 @@ fun SubCategoryList(
                     ),
                 ) {
                     Text(
-                        subCategory.name, textAlign = TextAlign.Center
+                        subCategory.name, textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.bodyLarge
                     )
                 }
-
-
             }
-
         }
     }
 }
