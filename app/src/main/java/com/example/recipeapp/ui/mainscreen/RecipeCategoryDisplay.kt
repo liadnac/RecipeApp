@@ -46,7 +46,8 @@ import androidx.compose.ui.unit.dp
 import com.example.recipeapp.R
 import com.example.recipeapp.data.Category
 import com.example.recipeapp.data.SubCategory
-import com.example.recipeapp.data.getCategoryFromJsonFile
+import com.example.recipeapp.data.getCategoriesFromJsonFile
+import com.example.recipeapp.data.getSubcategoriesFromJsonFile
 
 @Composable
 fun CategoryGrid(
@@ -84,6 +85,8 @@ fun CategoryCard(
     val rotationState by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f, label = ""
     )
+    val context = LocalContext.current
+    val subCategoryList: List<SubCategory> = getSubcategoriesFromJsonFile(context, "${category.name.lowercase()}_subcategories.json")
 
 
     Card(
@@ -120,7 +123,7 @@ fun CategoryCard(
             if (expanded) {
                 Spacer(modifier = Modifier.size(24.dp))
                 SubCategoryList(
-                    category.subCategoryList,
+                    subCategoryList,
                     subCategoryOnClick = subCategoryOnClick,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -176,9 +179,9 @@ fun SubCategoryList(
     }
 }
 
-val pancake: SubCategory = SubCategory("Pancakes")
-val popsicle: SubCategory = SubCategory("Popsicles")
-val kidsCategory: Category = Category("Kids", listOf(pancake, popsicle))
+val pancake: SubCategory = SubCategory(1,"Pancakes",1)
+val popsicle: SubCategory = SubCategory(2,"Popsicles",1)
+val kidsCategory: Category = Category(1,"Kids")
 
 @Preview
 @Composable
@@ -204,7 +207,7 @@ fun SubCategoryListPreview() {
 @Composable
 fun CategoryGridPreview() {
     val context = LocalContext.current
-    val categoryList: List<Category> = getCategoryFromJsonFile(context, "category.json")
+    val categoryList: List<Category> = getCategoriesFromJsonFile(context, "categories.json")
     CategoryGrid(
         categoryList,
         subCategoryOnClick = {},

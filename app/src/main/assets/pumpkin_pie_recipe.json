@@ -1,0 +1,37 @@
+{
+  "id": 1,
+  "name": "Pumpkin Pie",
+  "cook_time": [
+    {
+      "hands_on": "PT30M"
+    },
+    {
+      "ready_in": "PT2H30M"
+    }
+  ],
+  "recipe_parts": [
+    {
+      "name": "Crust",
+      "ingredients": [
+        "100g butter",
+        "1 cup(140g) flour"
+      ],
+      "instructions": [
+        "Pulse butter, sugar and flour in food processor...",
+        "Add egg and mix..."
+      ]
+    },
+    {
+      "name": "Filling",
+      "ingredients": [
+        "one 15-ounce can (425g) pumpkin puree",
+        "3 large eggs"
+      ],
+      "instructions": [
+        "Whisk the pumpkin, 3 eggs, and brown sugar together until combined....",
+        "Pour over pie crust..."
+      ]
+    }
+  ],
+  "subcategory_id": 4
+}

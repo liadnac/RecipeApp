@@ -14,8 +14,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.recipeapp.data.Category
 import com.example.recipeapp.data.Recipe
-import com.example.recipeapp.data.getCategoryFromJsonFile
-import com.example.recipeapp.data.getRecipeFromJsonFile
+import com.example.recipeapp.data.getCategoriesFromJsonFile
+import com.example.recipeapp.data.getRecipesFromJsonFile
 import com.example.recipeapp.navigation.Destination
 import com.example.recipeapp.ui.mainscreen.CategoryGrid
 import com.example.recipeapp.ui.mainscreen.RecipeTopBar
@@ -32,8 +32,8 @@ fun RecipeApp(
         backStackEntry?.destination?.route ?: Destination.Start.name)
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val context = LocalContext.current
-    val categoryList: List<Category> = getCategoryFromJsonFile(context, "category.json")
-    val recipeList: List<Recipe> = getRecipeFromJsonFile(context, "recipe.json")
+    val categoryList: List<Category> = getCategoriesFromJsonFile(context, "categories.json")
+    val recipeList: List<Recipe> = getRecipesFromJsonFile(context, "pancakes_recipes.json")
     Scaffold(
         topBar = {
             RecipeTopBar(

@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "name": "Pancakes",
+    "category_id": 1
+  },
+  {
+    "id": 2,
+    "name": "Popsicles",
+    "category_id": 1
+  }
+]

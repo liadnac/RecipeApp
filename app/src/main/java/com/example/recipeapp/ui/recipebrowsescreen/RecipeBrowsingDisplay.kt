@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.recipeapp.R
 import com.example.recipeapp.data.Recipe
-import com.example.recipeapp.data.getRecipeFromJsonFile
+import com.example.recipeapp.data.getRecipesFromJsonFile
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -132,7 +132,7 @@ fun cookTimeFormater(
 @Preview
 @Composable
 fun RecipeCardPreview() {
-    val recipe = Recipe("Pumpkin Pancakes", 30.toDuration(DurationUnit.MINUTES))
+    val recipe = Recipe(1,"Pumpkin Pancakes", 30.toDuration(DurationUnit.MINUTES), 1)
     RecipeCard(recipe)
 }
 
@@ -141,9 +141,9 @@ fun RecipeCardPreview() {
 @Composable
 fun RecipeBrowsingGridPreview() {
     val context = LocalContext.current
-    val recipeList: List<Recipe> = getRecipeFromJsonFile(
+    val recipeList: List<Recipe> = getRecipesFromJsonFile(
         context,
-        fileName = "recipe.json"
+        fileName = "pancakes_recipes.json"
     )
     RecipeBrowsingGrid(recipeList)
 }
