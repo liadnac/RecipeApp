@@ -1,7 +1,6 @@
 package com.example.recipeapp.data
 
 import android.content.Context
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
@@ -15,7 +14,6 @@ data class Category(
 data class SubCategory(
     val id: Int,
     val name: String,
-    @SerialName("category_id")
     val categoryId: Int,
 )
 

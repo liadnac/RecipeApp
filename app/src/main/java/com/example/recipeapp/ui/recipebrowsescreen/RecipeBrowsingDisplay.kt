@@ -26,8 +26,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.recipeapp.R
-import com.example.recipeapp.data.Recipe
-import com.example.recipeapp.data.getRecipesFromJsonFile
+import com.example.recipeapp.data.PartialRecipe
+import com.example.recipeapp.data.getPartialRecipesFromJsonFile
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -35,7 +35,7 @@ import kotlin.time.toDuration
 
 @Composable
 fun RecipeBrowsingGrid(
-    recipeList: List<Recipe>,
+    recipeList: List<PartialRecipe>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(8.dp),
 ) {
@@ -58,7 +58,7 @@ fun RecipeBrowsingGrid(
 
 @Composable
 fun RecipeCard(
-    recipe: Recipe,
+    recipe: PartialRecipe,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -132,7 +132,7 @@ fun cookTimeFormater(
 @Preview
 @Composable
 fun RecipeCardPreview() {
-    val recipe = Recipe(1,"Pumpkin Pancakes", 30.toDuration(DurationUnit.MINUTES), 1)
+    val recipe = PartialRecipe(1,"Pumpkin Pancakes", 30.toDuration(DurationUnit.MINUTES), 1)
     RecipeCard(recipe)
 }
 
@@ -141,7 +141,7 @@ fun RecipeCardPreview() {
 @Composable
 fun RecipeBrowsingGridPreview() {
     val context = LocalContext.current
-    val recipeList: List<Recipe> = getRecipesFromJsonFile(
+    val recipeList: List<PartialRecipe> = getPartialRecipesFromJsonFile(
         context,
         fileName = "pancakes_recipes.json"
     )

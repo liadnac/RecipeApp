@@ -3,12 +3,12 @@
     "id": 1,
     "name": "Pumpkin Pie",
     "cookTime": "PT2H30M",
-    "subcategory_id": 4
+    "subcategoryId": 4
   },
   {
     "id": 2,
     "name": "Chocolate Tart",
     "cookTime": "PT3H30M",
-    "subcategory_id": 4
+    "subcategoryId": 4
   }
 ]

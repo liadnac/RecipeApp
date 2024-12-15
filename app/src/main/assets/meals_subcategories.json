@@ -2,16 +2,16 @@
   {
     "id": 1,
     "name": "Breakfast",
-    "category_id": 2
+    "categoryId": 2
   },
   {
     "id": 2,
     "name": "Lunch",
-    "category_id": 2
+    "categoryId": 2
   },
   {
     "id": 3,
     "name": "Dinner",
-    "category_id": 2
+    "categoryId": 2
   }
 ]
