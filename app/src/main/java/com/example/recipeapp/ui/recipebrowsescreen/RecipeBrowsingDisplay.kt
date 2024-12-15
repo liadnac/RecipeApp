@@ -143,7 +143,7 @@ fun RecipeBrowsingGridPreview() {
     val context = LocalContext.current
     val recipeList: List<PartialRecipe> = getPartialRecipesFromJsonFile(
         context,
-        fileName = "pancakes_recipes.json"
+        fileName = "pancakesRecipes.json"
     )
     RecipeBrowsingGrid(recipeList)
 }

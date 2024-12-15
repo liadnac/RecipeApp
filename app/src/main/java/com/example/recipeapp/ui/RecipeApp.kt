@@ -33,7 +33,7 @@ fun RecipeApp(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val context = LocalContext.current
     val categoryList: List<Category> = getCategoriesFromJsonFile(context, "categories.json")
-    val recipeList: List<PartialRecipe> = getPartialRecipesFromJsonFile(context, "pancakes_recipes.json")
+    val recipeList: List<PartialRecipe> = getPartialRecipesFromJsonFile(context, "pancakesRecipes.json")
     Scaffold(
         topBar = {
             RecipeTopBar(
