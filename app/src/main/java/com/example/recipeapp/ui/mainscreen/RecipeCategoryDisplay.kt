@@ -86,7 +86,8 @@ fun CategoryCard(
         targetValue = if (expanded) 180f else 0f, label = ""
     )
     val context = LocalContext.current
-    val subCategoryList: List<SubCategory> = getSubcategoriesFromJsonFile(context, "${category.name.lowercase()}_subcategories.json")
+    //This way of getting the JSON subcategory file name is not good, needs to change...
+    val subCategoryList: List<SubCategory> = getSubcategoriesFromJsonFile(context, "${category.name.lowercase()}Subcategories.json")
 
 
     Card(

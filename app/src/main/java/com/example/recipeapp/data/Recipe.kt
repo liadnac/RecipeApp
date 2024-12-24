@@ -3,6 +3,7 @@ package com.example.recipeapp.data
 import android.content.Context
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import java.time.temporal.TemporalAmount
 import kotlin.time.Duration
 
 
@@ -36,9 +37,9 @@ data class Recipe(
 
 /**
  * Cook time for the full recipe displayed in the selected recipe screen.
- * `handsOn`  refers to the time require for the preparation of the recipe,
- * while `readyIn` refers to the total time it takes until the dish is ready.
  * Matches the format of `cookTime` received from `/recipes/{recipeId}`.
+ *  @property handsOn the time require for the preparation of the recipe
+ *  @property readyIn the total time it takes until the dish is ready
  */
 @Serializable
 data class CookTime(
@@ -59,6 +60,12 @@ data class RecipePart(
     val instructions: List<String>
 )
 
+//@Serializable
+//data class Ingredient(
+//    val amount: Float,
+//    val ingredient: String
+//)
+
 fun getPartialRecipesFromJsonFile(
     context: Context,
     fileName: String
@@ -77,4 +84,20 @@ fun getFullRecipeFromJsonFile(
         it.readText()
     }
     return Json.decodeFromString<Recipe>(jsonString)
+}
+
+fun cookTimeFormater(
+    cookTime: Duration
+): String {
+    var formatedCookTime = ""
+    val splitCookTime = cookTime.toString().split(
+        "h", "m"
+    )
+    if (cookTime.toString().contains("h")) {
+        formatedCookTime += splitCookTime[0] + " hr"
+        formatedCookTime += splitCookTime[1] + " mins"
+    } else if (cookTime.toString().contains("m")) {
+        formatedCookTime += splitCookTime[0] + " mins"
+    }
+    return formatedCookTime
 }

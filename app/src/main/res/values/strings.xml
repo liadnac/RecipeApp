@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">Recipe App</string>
     <string name="recipe_browse">Recipe Browsing</string>
+    <string name="selected_recipe">Selected Recipe</string>
     <string name="back_button">Back</string>
+    <string name="recipe_image_content_desc">An image of the recipe</string>
+    <string name="ingredients_sub_title">Ingredients:</string>
+    <string name="instructions_sub_title">Instructions:</string>
+    <string name="clock_icon">clock icon</string>
+    <string name="prep_icon">Food prep icon</string>
 </resources>

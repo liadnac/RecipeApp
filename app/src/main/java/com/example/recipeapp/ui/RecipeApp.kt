@@ -14,12 +14,15 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.recipeapp.data.Category
 import com.example.recipeapp.data.PartialRecipe
+import com.example.recipeapp.data.Recipe
 import com.example.recipeapp.data.getCategoriesFromJsonFile
+import com.example.recipeapp.data.getFullRecipeFromJsonFile
 import com.example.recipeapp.data.getPartialRecipesFromJsonFile
 import com.example.recipeapp.navigation.Destination
 import com.example.recipeapp.ui.mainscreen.CategoryGrid
 import com.example.recipeapp.ui.mainscreen.RecipeTopBar
 import com.example.recipeapp.ui.recipebrowsescreen.RecipeBrowsingGrid
+import com.example.recipeapp.ui.selectedrecipescreen.SelectedRecipeScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,6 +37,7 @@ fun RecipeApp(
     val context = LocalContext.current
     val categoryList: List<Category> = getCategoriesFromJsonFile(context, "categories.json")
     val recipeList: List<PartialRecipe> = getPartialRecipesFromJsonFile(context, "pancakesRecipes.json")
+    val recipe: Recipe = getFullRecipeFromJsonFile(context, "pumpkinPieRecipe.json")
     Scaffold(
         topBar = {
             RecipeTopBar(
@@ -55,15 +59,24 @@ fun RecipeApp(
                     categoryList = categoryList,
                     subCategoryOnClick = { navController.navigate(Destination.RecipeBrowsing.name) },
                     contentPadding = contentPadding,
-                    modifier = modifier
+                    modifier = Modifier
                 )
             }
 
             composable(route = Destination.RecipeBrowsing.name) {
                 RecipeBrowsingGrid(
                     recipeList = recipeList,
+                    modifier = Modifier,
                     contentPadding = contentPadding,
-                    modifier = modifier
+                    recipeOnClick = { navController.navigate(Destination.SelectedRecipe.name)}
+                )
+            }
+
+            composable(route = Destination.SelectedRecipe.name) {
+                SelectedRecipeScreen(
+                    modifier = Modifier,
+                    contentPadding = contentPadding,
+                    recipe = recipe
                 )
             }
         }

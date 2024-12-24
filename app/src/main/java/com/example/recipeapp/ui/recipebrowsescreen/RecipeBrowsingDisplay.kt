@@ -22,13 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.recipeapp.R
 import com.example.recipeapp.data.PartialRecipe
+import com.example.recipeapp.data.cookTimeFormater
 import com.example.recipeapp.data.getPartialRecipesFromJsonFile
-import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -38,6 +39,7 @@ fun RecipeBrowsingGrid(
     recipeList: List<PartialRecipe>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(8.dp),
+    recipeOnClick: () -> Unit,
 ) {
     val gridState = rememberLazyGridState()
     LazyVerticalGrid(
@@ -49,7 +51,8 @@ fun RecipeBrowsingGrid(
     ) {
         items(recipeList) { recipe ->
             RecipeCard(
-                recipe,
+                recipe = recipe,
+                recipeOnClick = recipeOnClick
             )
 
         }
@@ -59,19 +62,21 @@ fun RecipeBrowsingGrid(
 @Composable
 fun RecipeCard(
     recipe: PartialRecipe,
+    recipeOnClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
             .padding(dimensionResource(id = R.dimen.padding_small))
             .fillMaxWidth(),
+        onClick = recipeOnClick
 
         ) {
 
         Box {
             Image(
                 painter = painterResource(R.drawable.pasta),
-                contentDescription = "An image of the recipe"
+                contentDescription = stringResource(R.string.recipe_image_content_desc)
             )
 
         }
@@ -84,7 +89,7 @@ fun RecipeCard(
         ) {
             Icon(
                 painterResource(R.drawable.ic_clock_svgrepo_com),
-                contentDescription = "clock icon",
+                contentDescription = stringResource(R.string.clock_icon),
                 modifier = Modifier.size(25.dp)
             )
             Text(
@@ -112,28 +117,11 @@ fun RecipeCard(
 }
 
 
-fun cookTimeFormater(
-    cookTime: Duration
-): String {
-    var formatedCookTime = ""
-    val splitCookTime = cookTime.toString().split(
-        "h", "m"
-    )
-    if (cookTime.toString().contains("h")) {
-        formatedCookTime += splitCookTime[0] + " hr"
-        formatedCookTime += splitCookTime[1] + " mins"
-    } else if (cookTime.toString().contains("m")) {
-        formatedCookTime += splitCookTime[0] + " mins"
-    }
-    return formatedCookTime
-}
-
-
 @Preview
 @Composable
 fun RecipeCardPreview() {
     val recipe = PartialRecipe(1,"Pumpkin Pancakes", 30.toDuration(DurationUnit.MINUTES), 1)
-    RecipeCard(recipe)
+    RecipeCard(recipe, {})
 }
 
 
@@ -145,5 +133,5 @@ fun RecipeBrowsingGridPreview() {
         context,
         fileName = "pancakesRecipes.json"
     )
-    RecipeBrowsingGrid(recipeList)
+    RecipeBrowsingGrid(recipeList, recipeOnClick = {})
 }

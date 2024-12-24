@@ -1,14 +1,11 @@
 {
   "id": 1,
   "name": "Pumpkin Pie",
-  "cookTime": [
-    {
-      "handsOn": "PT30M"
-    },
-    {
-      "readyIn": "PT2H30M"
-    }
-  ],
+  "description": "A lovely pumpkin pie recipe, a perfect fall desert!",
+  "cookTime": {
+    "handsOn": "PT30M",
+    "readyIn": "PT2H30M"
+  },
   "recipeParts": [
     {
       "name": "Crust",
