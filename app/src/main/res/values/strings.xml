@@ -8,4 +8,6 @@
     <string name="instructions_sub_title">Instructions:</string>
     <string name="clock_icon">clock icon</string>
     <string name="prep_icon">Food prep icon</string>
+    <string name="instruction_icon">Instruction icon</string>
+    <string name="ingredients_icon">Ingredients icon</string>
 </resources>

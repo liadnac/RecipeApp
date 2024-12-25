@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,10 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.recipeapp.R
 import com.example.recipeapp.data.RecipePart
 
@@ -30,25 +33,43 @@ fun RecipePartScreen(
     recipePart: RecipePart
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.padding(dimensionResource(R.dimen.padding_small)),
     ) {
         Text(
             modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_small)),
             text = recipePart.name,
             style = MaterialTheme.typography.titleLarge
         )
-        Text(
-            text = stringResource(R.string.ingredients_sub_title),
-            textAlign = TextAlign.Start,
-            style = MaterialTheme.typography.titleMedium
-        )
+        Row {
+            Icon(
+                painter = painterResource(R.drawable.water_container_svgrepo_com),
+                contentDescription = stringResource(R.string.ingredients_icon),
+                modifier = Modifier
+                    .size(24.dp)
+                    .padding(end = dimensionResource(R.dimen.padding_small))
+            )
+            Text(
+                text = stringResource(R.string.ingredients_sub_title),
+                textAlign = TextAlign.Start,
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
         IngredientsList(ingredientsList = recipePart.ingredients)
         Spacer(modifier = Modifier.size(dimensionResource(R.dimen.spacer)))
-        Text(
-            text = stringResource(R.string.instructions_sub_title),
-            textAlign = TextAlign.Start,
-            style = MaterialTheme.typography.titleMedium
-        )
+        Row {
+            Icon(
+                painter = painterResource(R.drawable.break_eggs_svgrepo_com),
+                contentDescription = stringResource(R.string.instruction_icon),
+                modifier = Modifier
+                    .size(size = 24.dp)
+                    .padding(end = dimensionResource(R.dimen.padding_small))
+            )
+            Text(
+                text = stringResource(R.string.instructions_sub_title),
+                textAlign = TextAlign.Start,
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
         InstructionsList(instructionsList = recipePart.instructions)
         Spacer(modifier = Modifier.size(dimensionResource(R.dimen.spacer)))
     }

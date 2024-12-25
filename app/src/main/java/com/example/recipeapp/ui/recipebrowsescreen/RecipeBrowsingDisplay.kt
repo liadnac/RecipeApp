@@ -88,7 +88,7 @@ fun RecipeCard(
             horizontalArrangement = Arrangement.Start
         ) {
             Icon(
-                painterResource(R.drawable.ic_clock_svgrepo_com),
+                painterResource(R.drawable.clock_svgrepo_com),
                 contentDescription = stringResource(R.string.clock_icon),
                 modifier = Modifier.size(25.dp)
             )
