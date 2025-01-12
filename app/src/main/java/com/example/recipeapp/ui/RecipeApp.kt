@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -15,9 +16,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.recipeapp.data.Category
 import com.example.recipeapp.data.PartialRecipe
 import com.example.recipeapp.data.Recipe
+import com.example.recipeapp.data.SubCategory
 import com.example.recipeapp.data.getCategoriesFromJsonFile
 import com.example.recipeapp.data.getFullRecipeFromJsonFile
 import com.example.recipeapp.data.getPartialRecipesFromJsonFile
+import com.example.recipeapp.data.getSubcategoriesFromJsonFile
 import com.example.recipeapp.navigation.Destination
 import com.example.recipeapp.ui.mainscreen.CategoryGrid
 import com.example.recipeapp.ui.mainscreen.RecipeTopBar
@@ -32,12 +35,51 @@ fun RecipeApp(
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = Destination.valueOf(
-        backStackEntry?.destination?.route ?: Destination.Start.name)
+        backStackEntry?.destination?.route ?: Destination.Start.name
+    )
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val context = LocalContext.current
     val categoryList: List<Category> = getCategoriesFromJsonFile(context, "categories.json")
-    val recipeList: List<PartialRecipe> = getPartialRecipesFromJsonFile(context, "pancakesRecipes.json")
+    val kidsSubCategoryList: List<SubCategory> =
+        getSubcategoriesFromJsonFile(context, "kidsSubcategories.json")
+    val bakingSubCategoryList: List<SubCategory> =
+        getSubcategoriesFromJsonFile(context, "bakingSubcategories.json")
+    val mealsSubCategoryList: List<SubCategory> =
+        getSubcategoriesFromJsonFile(context, "mealsSubcategories.json")
+    val pancakeRecipeList: List<PartialRecipe> =
+        getPartialRecipesFromJsonFile(context, "pancakesRecipes.json")
+    val frozenConfectionsRecipeList: List<PartialRecipe> =
+        getPartialRecipesFromJsonFile(context, "frozenConfectionsRecipes.json")
+    val breakfastRecipeList: List<PartialRecipe> =
+        getPartialRecipesFromJsonFile(context, "breakfastRecipes.json")
+    val lunchRecipeList: List<PartialRecipe> =
+        getPartialRecipesFromJsonFile(context, "lunchRecipes.json")
+    val dinnerRecipeList: List<PartialRecipe> =
+        getPartialRecipesFromJsonFile(context, "dinnerRecipes.json")
+    val breadAndDoughRecipeList: List<PartialRecipe> =
+        getPartialRecipesFromJsonFile(context, "breadAndDoughRecipes.json")
+    val cakeAndMuffinsRecipeList: List<PartialRecipe> =
+        getPartialRecipesFromJsonFile(context, "cakeAndMuffinsRecipes.json")
+    val cookiesAndBrowniesRecipeList: List<PartialRecipe> =
+        getPartialRecipesFromJsonFile(context, "cookiesAndBrowniesRecipes.json")
+    val tartsAndPiesRecipeList: List<PartialRecipe> =
+        getPartialRecipesFromJsonFile(context, "tartsAndPiesRecipes.json")
     val recipe: Recipe = getFullRecipeFromJsonFile(context, "pumpkinPieRecipe.json")
+    val recipeViewModel: RecipeViewModel = viewModel()
+    recipeViewModel.setSubcategoryRecipesMap(
+        kidsSubCategoryList,
+        mealsSubCategoryList,
+        bakingSubCategoryList,
+        dinnerRecipeList,
+        lunchRecipeList,
+        breakfastRecipeList,
+        breadAndDoughRecipeList,
+        cakeAndMuffinsRecipeList,
+        cookiesAndBrowniesRecipeList,
+        pancakeRecipeList,
+        tartsAndPiesRecipeList,
+        frozenConfectionsRecipeList
+    )
     Scaffold(
         topBar = {
             RecipeTopBar(
@@ -53,11 +95,14 @@ fun RecipeApp(
             navController = navController,
             startDestination = Destination.Start.name,
             modifier = modifier,
-        ){
+        ) {
             composable(route = Destination.Start.name) {
                 CategoryGrid(
                     categoryList = categoryList,
-                    subCategoryOnClick = { navController.navigate(Destination.RecipeBrowsing.name) },
+                    subCategoryOnClick = { subCategory ->
+                        recipeViewModel.updateSubcategory(subCategory)
+                        navController.navigate(Destination.RecipeBrowsing.name)
+                    },
                     contentPadding = contentPadding,
                     modifier = Modifier
                 )
@@ -65,10 +110,10 @@ fun RecipeApp(
 
             composable(route = Destination.RecipeBrowsing.name) {
                 RecipeBrowsingGrid(
-                    recipeList = recipeList,
+                    recipeViewModel = recipeViewModel,
                     modifier = Modifier,
                     contentPadding = contentPadding,
-                    recipeOnClick = { navController.navigate(Destination.SelectedRecipe.name)}
+                    recipeOnClick = { navController.navigate(Destination.SelectedRecipe.name) }
                 )
             }
 

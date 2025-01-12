@@ -39,7 +39,8 @@ class DataUnitTest {
             id = 1, name = "Test",
             cookTime = cookTime,
             recipeParts = listOf(recipePart),
-            subcategoryId = 1
+            subcategoryId = 1,
+            description = "desc"
         )
         val jsonString = Json.encodeToString(original)
         val deserialized = Json.decodeFromString<Recipe>(jsonString)

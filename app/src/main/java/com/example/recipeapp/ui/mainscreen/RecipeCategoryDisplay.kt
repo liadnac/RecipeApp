@@ -52,7 +52,7 @@ import com.example.recipeapp.data.getSubcategoriesFromJsonFile
 @Composable
 fun CategoryGrid(
     categoryList: List<Category>,
-    subCategoryOnClick: () -> Unit,
+    subCategoryOnClick: (SubCategory) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(4.dp),
 ) {
@@ -78,7 +78,7 @@ fun CategoryGrid(
 @Composable
 fun CategoryCard(
     category: Category,
-    subCategoryOnClick: () -> Unit,
+    subCategoryOnClick: (SubCategory) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -87,7 +87,8 @@ fun CategoryCard(
     )
     val context = LocalContext.current
     //This way of getting the JSON subcategory file name is not good, needs to change...
-    val subCategoryList: List<SubCategory> = getSubcategoriesFromJsonFile(context, "${category.name.lowercase()}Subcategories.json")
+    val subCategoryList: List<SubCategory> =
+        getSubcategoriesFromJsonFile(context, "${category.name.lowercase()}Subcategories.json")
 
 
     Card(
@@ -119,12 +120,12 @@ fun CategoryCard(
                     textAlign = TextAlign.Center,
                     color = Color.DarkGray
 
-                    )
+                )
             }
             if (expanded) {
                 Spacer(modifier = Modifier.size(24.dp))
                 SubCategoryList(
-                    subCategoryList,
+                    subCategoryList = subCategoryList,
                     subCategoryOnClick = subCategoryOnClick,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -153,7 +154,7 @@ fun CategoryCard(
 @Composable
 fun SubCategoryList(
     subCategoryList: List<SubCategory>,
-    subCategoryOnClick: () -> Unit,
+    subCategoryOnClick: (SubCategory) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -165,7 +166,7 @@ fun SubCategoryList(
                 modifier = Modifier
             ) {
                 TextButton(
-                    onClick = subCategoryOnClick,
+                    onClick = {subCategoryOnClick(subCategory)},
                     modifier = Modifier.padding(
                         dimensionResource(id = R.dimen.padding_medium)
                     ),
@@ -176,13 +177,14 @@ fun SubCategoryList(
                     )
                 }
             }
+
         }
     }
 }
 
-val pancake: SubCategory = SubCategory(1,"Pancakes",1)
-val popsicle: SubCategory = SubCategory(2,"Popsicles",1)
-val kidsCategory: Category = Category(1,"Kids")
+val pancake: SubCategory = SubCategory(1, "Pancakes", 1)
+val popsicle: SubCategory = SubCategory(2, "Popsicles", 1)
+val kidsCategory: Category = Category(1, "Kids")
 
 @Preview
 @Composable
@@ -201,7 +203,7 @@ fun CategoryCardPreview() {
 @Composable
 fun SubCategoryListPreview() {
     val subCategoryList: List<SubCategory> = listOf(pancake, popsicle)
-    SubCategoryList(subCategoryList, {})
+    SubCategoryList(subCategoryList = subCategoryList, subCategoryOnClick = {})
 }
 
 @Preview
