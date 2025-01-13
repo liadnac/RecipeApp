@@ -57,10 +57,10 @@ fun CategoryGrid(
     contentPadding: PaddingValues = PaddingValues(4.dp),
 ) {
     LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Adaptive(minSize = 128.dp),
+        columns = StaggeredGridCells.Adaptive(minSize = 144.dp),
         modifier = modifier.padding(horizontal = 4.dp),
         contentPadding = contentPadding,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.SpaceAround,
 
         ) {
         items(categoryList) { category ->
