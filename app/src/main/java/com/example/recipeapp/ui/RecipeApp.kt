@@ -64,7 +64,9 @@ fun RecipeApp(
         getPartialRecipesFromJsonFile(context, "cookiesAndBrowniesRecipes.json")
     val tartsAndPiesRecipeList: List<PartialRecipe> =
         getPartialRecipesFromJsonFile(context, "tartsAndPiesRecipes.json")
-    val recipe: Recipe = getFullRecipeFromJsonFile(context, "pumpkinPieRecipe.json")
+    val recipeList: MutableList<Recipe> = mutableListOf(getFullRecipeFromJsonFile(context, "pumpkinPieRecipe.json"))
+    recipeList.add(getFullRecipeFromJsonFile(context, "ChocolatePancakesRecipe.json"))
+
     val recipeViewModel: RecipeViewModel = viewModel()
     recipeViewModel.setSubcategoryRecipesMap(
         kidsSubCategoryList,
@@ -100,7 +102,7 @@ fun RecipeApp(
                 CategoryGrid(
                     categoryList = categoryList,
                     subCategoryOnClick = { subCategory ->
-                        recipeViewModel.updateSubcategory(subCategory)
+                        recipeViewModel.updateSubcategory(subCategory.name)
                         navController.navigate(Destination.RecipeBrowsing.name)
                     },
                     contentPadding = contentPadding,
@@ -113,15 +115,20 @@ fun RecipeApp(
                     recipeViewModel = recipeViewModel,
                     modifier = Modifier,
                     contentPadding = contentPadding,
-                    recipeOnClick = { navController.navigate(Destination.SelectedRecipe.name) }
+                    recipeOnClick = { recipe ->
+                        recipeViewModel.updateSelectedRecipe(
+                            recipe = recipe.name,
+                            recipeList = recipeList,
+                        )
+                        navController.navigate(Destination.SelectedRecipe.name) }
                 )
             }
 
             composable(route = Destination.SelectedRecipe.name) {
                 SelectedRecipeScreen(
+                    recipeViewModel = recipeViewModel,
                     modifier = Modifier,
                     contentPadding = contentPadding,
-                    recipe = recipe
                 )
             }
         }

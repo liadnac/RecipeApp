@@ -2,6 +2,7 @@ package com.example.recipeapp.ui
 
 import androidx.lifecycle.ViewModel
 import com.example.recipeapp.data.PartialRecipe
+import com.example.recipeapp.data.Recipe
 import com.example.recipeapp.data.SubCategory
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,6 +13,7 @@ class RecipeViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(RecipeUiState())
     val uiState: StateFlow<RecipeUiState> = _uiState.asStateFlow()
     private val subcategoryToRecipesMap: MutableMap<String, List<PartialRecipe>> = mutableMapOf()
+
 
     private fun <T> mergeLists(vararg lists: List<T>): List<T> {
         val mergedList = mutableListOf<T>()
@@ -37,10 +39,10 @@ class RecipeViewModel : ViewModel() {
         }
     }
 
-    fun updateSubcategory(subCategory: SubCategory) {
+    fun updateSubcategory(subCategory: String) {
         _uiState.update { currentState ->
             currentState.copy(
-                subcategory = subCategory.name
+                subcategory = subCategory
             )
         }
     }
@@ -49,9 +51,19 @@ class RecipeViewModel : ViewModel() {
         _uiState.update { currentState ->
             subcategoryToRecipesMap[subCategory]?.let {
                 currentState.copy(
-                    recipes = it
+                    subcategoryRecipes = it
                 )
             }!!
         }
+    }
+
+    fun updateSelectedRecipe(recipe: String, recipeList: List<Recipe>) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                selectedRecipeName = recipe,
+                selectedRecipe = if (recipe.length > 15) {recipeList[0]} else {recipeList[1]}
+            )
+        }
+
     }
 }
