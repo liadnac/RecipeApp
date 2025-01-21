@@ -10,8 +10,8 @@ class ViewModelUnitTest {
     @Test
     fun testViewModelUpdateSubcategory() {
         val subCategory = SubCategory(id = 1, name = "pancake", categoryId = 1)
-        recipeViewModel.updateSubcategory(subCategory)
-        assertEquals("pancake", recipeViewModel.uiState.value.subcategory)
+        recipeViewModel.subcategorySelected(subCategory)
+        assertEquals("pancake", recipeViewModel.uiState.value.subcategoryName)
     }
 
 }

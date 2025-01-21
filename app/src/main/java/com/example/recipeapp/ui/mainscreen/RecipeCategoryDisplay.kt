@@ -28,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,19 +44,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recipeapp.R
 import com.example.recipeapp.data.Category
 import com.example.recipeapp.data.SubCategory
 import com.example.recipeapp.data.getCategoriesFromJsonFile
 import com.example.recipeapp.data.getSubcategoriesFromJsonFile
+import com.example.recipeapp.ui.CategoryCardState
+import com.example.recipeapp.ui.RecipeViewModel
 
 @Composable
 fun CategoryGrid(
-    categoryList: List<Category>,
+    recipeViewModel: RecipeViewModel = viewModel(),
     subCategoryOnClick: (SubCategory) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(4.dp),
 ) {
+    val recipeUiState by recipeViewModel.uiState.collectAsState()
+    val categoryList = recipeUiState.categoryList
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Adaptive(minSize = 144.dp),
         modifier = modifier.padding(horizontal = 4.dp),
@@ -65,7 +71,8 @@ fun CategoryGrid(
         ) {
         items(categoryList) { category ->
             CategoryCard(
-                category,
+                category = category,
+                recipeViewModel = recipeViewModel,
                 modifier = Modifier,
                 subCategoryOnClick = subCategoryOnClick
             )
@@ -77,7 +84,8 @@ fun CategoryGrid(
 
 @Composable
 fun CategoryCard(
-    category: Category,
+    category: CategoryCardState,
+    recipeViewModel: RecipeViewModel = viewModel(),
     subCategoryOnClick: (SubCategory) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -85,10 +93,7 @@ fun CategoryCard(
     val rotationState by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f, label = ""
     )
-    val context = LocalContext.current
-    //This way of getting the JSON subcategory file name is not good, needs to change...
-    val subCategoryList: List<SubCategory> =
-        getSubcategoriesFromJsonFile(context, "${category.name.lowercase()}Subcategories.json")
+    val recipeUiState by recipeViewModel.uiState.collectAsState()
 
 
     Card(
@@ -112,7 +117,7 @@ fun CategoryCard(
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    category.name,
+                    category.category.name,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier
                         .padding(dimensionResource(id = R.dimen.padding_small))
@@ -125,7 +130,7 @@ fun CategoryCard(
             if (expanded) {
                 Spacer(modifier = Modifier.size(24.dp))
                 SubCategoryList(
-                    subCategoryList = subCategoryList,
+                    subCategoryList = category.subcategories,
                     subCategoryOnClick = subCategoryOnClick,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -191,7 +196,7 @@ val kidsCategory: Category = Category(1, "Kids")
 fun CategoryCardPreview() {
 
     CategoryCard(
-        kidsCategory,
+        category = CategoryCardState(category = Category(1,"Test")),
         subCategoryOnClick = {},
         modifier = Modifier
             .padding(4.dp)
@@ -212,7 +217,6 @@ fun CategoryGridPreview() {
     val context = LocalContext.current
     val categoryList: List<Category> = getCategoriesFromJsonFile(context, "categories.json")
     CategoryGrid(
-        categoryList,
         subCategoryOnClick = {},
         contentPadding = PaddingValues(4.dp)
     )

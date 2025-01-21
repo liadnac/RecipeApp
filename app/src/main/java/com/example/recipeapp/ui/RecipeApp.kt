@@ -68,6 +68,12 @@ fun RecipeApp(
     recipeList.add(getFullRecipeFromJsonFile(context, "ChocolatePancakesRecipe.json"))
 
     val recipeViewModel: RecipeViewModel = viewModel()
+    recipeViewModel.setCategorySubcategoryMap(
+        categoryList,
+        kidsSubCategoryList,
+        mealsSubCategoryList,
+        bakingSubCategoryList,
+    )
     recipeViewModel.setSubcategoryRecipesMap(
         kidsSubCategoryList,
         mealsSubCategoryList,
@@ -82,6 +88,8 @@ fun RecipeApp(
         tartsAndPiesRecipeList,
         frozenConfectionsRecipeList
     )
+    recipeViewModel.initializeCategories()
+
     Scaffold(
         topBar = {
             RecipeTopBar(
@@ -100,9 +108,9 @@ fun RecipeApp(
         ) {
             composable(route = Destination.Start.name) {
                 CategoryGrid(
-                    categoryList = categoryList,
+                    recipeViewModel = recipeViewModel,
                     subCategoryOnClick = { subCategory ->
-                        recipeViewModel.updateSubcategory(subCategory.name)
+                        recipeViewModel.subcategorySelected(subCategory.name)
                         navController.navigate(Destination.RecipeBrowsing.name)
                     },
                     contentPadding = contentPadding,

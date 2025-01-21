@@ -47,7 +47,7 @@ fun RecipeBrowsingGrid(
 ) {
     val recipeUiState by recipeViewModel.uiState.collectAsState()
     val gridState = rememberLazyGridState()
-    recipeViewModel.updateSubcategoryRecipes(recipeUiState.subcategory)
+    recipeViewModel.initializeRecipes()
 
     LazyVerticalGrid(
         state = gridState,
@@ -58,17 +58,17 @@ fun RecipeBrowsingGrid(
     ) {
         item(span = { GridItemSpan(this.maxLineSpan) }) {
             Text(
-                text = "Recipes for ${recipeUiState.subcategory}",
+                text = "Recipes for ${recipeUiState.subcategoryName}",
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium)),
                 textAlign = TextAlign.Start
 
-                )
+            )
         }
         items(recipeUiState.subcategoryRecipes) { recipe ->
             RecipeCard(
                 recipe = recipe,
-                recipeOnClick = {recipeOnClick(recipe)}
+                recipeOnClick = { recipeOnClick(recipe) }
             )
 
         }
@@ -86,7 +86,7 @@ fun RecipeCard(
         modifier = modifier
             .padding(dimensionResource(id = R.dimen.padding_small))
             .fillMaxWidth(),
-        onClick = {recipeOnClick(recipe)}
+        onClick = { recipeOnClick(recipe) }
 
     ) {
 
