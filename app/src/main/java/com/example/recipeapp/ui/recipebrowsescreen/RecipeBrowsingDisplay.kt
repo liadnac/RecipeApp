@@ -32,22 +32,41 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recipeapp.R
 import com.example.recipeapp.data.PartialRecipe
+import com.example.recipeapp.data.Recipe
 import com.example.recipeapp.data.cookTimeFormater
 import com.example.recipeapp.ui.RecipeViewModel
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-
 @Composable
-fun RecipeBrowsingGrid(
+fun RecipeBrowsingScreen(
     recipeViewModel: RecipeViewModel = viewModel(),
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(8.dp),
     recipeOnClick: (PartialRecipe) -> Unit,
 ) {
     val recipeUiState by recipeViewModel.uiState.collectAsState()
-    val gridState = rememberLazyGridState()
     recipeViewModel.initializeRecipes()
+
+    RecipeBrowsingGrid(
+        modifier = modifier,
+        contentPadding = contentPadding,
+        recipeOnClick = recipeOnClick,
+        subcategoryName = recipeUiState.subcategoryName,
+        subcategoryRecipes = recipeUiState.subcategoryRecipes
+    )
+}
+
+@Composable
+fun RecipeBrowsingGrid(
+    subcategoryName: String,
+    subcategoryRecipes: List<PartialRecipe>,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(8.dp),
+    recipeOnClick: (PartialRecipe) -> Unit,
+) {
+
+    val gridState = rememberLazyGridState()
 
     LazyVerticalGrid(
         state = gridState,
@@ -58,14 +77,14 @@ fun RecipeBrowsingGrid(
     ) {
         item(span = { GridItemSpan(this.maxLineSpan) }) {
             Text(
-                text = "Recipes for ${recipeUiState.subcategoryName}",
+                text = "Recipes for $subcategoryName",
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium)),
                 textAlign = TextAlign.Start
 
             )
         }
-        items(recipeUiState.subcategoryRecipes) { recipe ->
+        items(subcategoryRecipes) { recipe ->
             RecipeCard(
                 recipe = recipe,
                 recipeOnClick = { recipeOnClick(recipe) }
@@ -147,5 +166,19 @@ fun RecipeCardPreview() {
 @Preview(showBackground = true)
 @Composable
 fun RecipeBrowsingGridPreview() {
-    RecipeBrowsingGrid(recipeOnClick = {})
+    RecipeBrowsingGrid(
+        recipeOnClick = {},
+        subcategoryName = "Pancakes",
+        subcategoryRecipes = listOf(
+            PartialRecipe(
+            11, "Choco pancake", 30.toDuration(DurationUnit.MINUTES),
+                subcategoryId = 12
+            ),
+            PartialRecipe(
+                15, "Yogurt pancake", 30.toDuration(DurationUnit.MINUTES),
+                subcategoryId = 12
+            )
+        ),
+
+    )
 }

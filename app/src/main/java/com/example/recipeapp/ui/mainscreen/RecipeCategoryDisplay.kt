@@ -49,12 +49,11 @@ import com.example.recipeapp.R
 import com.example.recipeapp.data.Category
 import com.example.recipeapp.data.SubCategory
 import com.example.recipeapp.data.getCategoriesFromJsonFile
-import com.example.recipeapp.data.getSubcategoriesFromJsonFile
 import com.example.recipeapp.ui.CategoryCardState
 import com.example.recipeapp.ui.RecipeViewModel
 
 @Composable
-fun CategoryGrid(
+fun CategoryDisplayScreen(
     recipeViewModel: RecipeViewModel = viewModel(),
     subCategoryOnClick: (SubCategory) -> Unit,
     modifier: Modifier = Modifier,
@@ -62,6 +61,22 @@ fun CategoryGrid(
 ) {
     val recipeUiState by recipeViewModel.uiState.collectAsState()
     val categoryList = recipeUiState.categoryList
+    CategoryGrid(
+        categoryCardStateList = categoryList,
+        subCategoryOnClick = subCategoryOnClick,
+        modifier = modifier,
+        contentPadding = contentPadding,
+    )
+}
+
+@Composable
+fun CategoryGrid(
+    categoryCardStateList: List<CategoryCardState>,
+    subCategoryOnClick: (SubCategory) -> Unit,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(4.dp),
+) {
+
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Adaptive(minSize = 144.dp),
         modifier = modifier.padding(horizontal = 4.dp),
@@ -69,10 +84,9 @@ fun CategoryGrid(
         horizontalArrangement = Arrangement.SpaceAround,
 
         ) {
-        items(categoryList) { category ->
+        items(categoryCardStateList) { category ->
             CategoryCard(
                 category = category,
-                recipeViewModel = recipeViewModel,
                 modifier = Modifier,
                 subCategoryOnClick = subCategoryOnClick
             )
@@ -85,7 +99,6 @@ fun CategoryGrid(
 @Composable
 fun CategoryCard(
     category: CategoryCardState,
-    recipeViewModel: RecipeViewModel = viewModel(),
     subCategoryOnClick: (SubCategory) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -93,7 +106,6 @@ fun CategoryCard(
     val rotationState by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f, label = ""
     )
-    val recipeUiState by recipeViewModel.uiState.collectAsState()
 
 
     Card(
@@ -171,7 +183,7 @@ fun SubCategoryList(
                 modifier = Modifier
             ) {
                 TextButton(
-                    onClick = {subCategoryOnClick(subCategory)},
+                    onClick = { subCategoryOnClick(subCategory) },
                     modifier = Modifier.padding(
                         dimensionResource(id = R.dimen.padding_medium)
                     ),
@@ -196,7 +208,7 @@ val kidsCategory: Category = Category(1, "Kids")
 fun CategoryCardPreview() {
 
     CategoryCard(
-        category = CategoryCardState(category = Category(1,"Test")),
+        category = CategoryCardState(category = Category(1, "Test")),
         subCategoryOnClick = {},
         modifier = Modifier
             .padding(4.dp)
@@ -215,9 +227,18 @@ fun SubCategoryListPreview() {
 @Composable
 fun CategoryGridPreview() {
     val context = LocalContext.current
-    val categoryList: List<Category> = getCategoriesFromJsonFile(context, "categories.json")
+    val categoryCardStateList = listOf(
+        CategoryCardState(
+            Category(1, "test"), false, listOf(
+                SubCategory(12, "subsub", 1), SubCategory
+                    (13, "choco", 1)
+            )
+        ), CategoryCardState(Category(2,"test2"),false, listOf(SubCategory(15,"pancake",2)))
+    )
     CategoryGrid(
         subCategoryOnClick = {},
-        contentPadding = PaddingValues(4.dp)
-    )
+        contentPadding = PaddingValues(4.dp),
+        categoryCardStateList = categoryCardStateList,
+
+        )
 }

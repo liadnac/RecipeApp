@@ -22,9 +22,11 @@ import com.example.recipeapp.data.getFullRecipeFromJsonFile
 import com.example.recipeapp.data.getPartialRecipesFromJsonFile
 import com.example.recipeapp.data.getSubcategoriesFromJsonFile
 import com.example.recipeapp.navigation.Destination
+import com.example.recipeapp.ui.mainscreen.CategoryDisplayScreen
 import com.example.recipeapp.ui.mainscreen.CategoryGrid
 import com.example.recipeapp.ui.mainscreen.RecipeTopBar
 import com.example.recipeapp.ui.recipebrowsescreen.RecipeBrowsingGrid
+import com.example.recipeapp.ui.recipebrowsescreen.RecipeBrowsingScreen
 import com.example.recipeapp.ui.selectedrecipescreen.SelectedRecipeScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,7 +66,8 @@ fun RecipeApp(
         getPartialRecipesFromJsonFile(context, "cookiesAndBrowniesRecipes.json")
     val tartsAndPiesRecipeList: List<PartialRecipe> =
         getPartialRecipesFromJsonFile(context, "tartsAndPiesRecipes.json")
-    val recipeList: MutableList<Recipe> = mutableListOf(getFullRecipeFromJsonFile(context, "pumpkinPieRecipe.json"))
+    val recipeList: MutableList<Recipe> =
+        mutableListOf(getFullRecipeFromJsonFile(context, "pumpkinPieRecipe.json"))
     recipeList.add(getFullRecipeFromJsonFile(context, "ChocolatePancakesRecipe.json"))
 
     val recipeViewModel: RecipeViewModel = viewModel()
@@ -107,7 +110,7 @@ fun RecipeApp(
             modifier = modifier,
         ) {
             composable(route = Destination.Start.name) {
-                CategoryGrid(
+                CategoryDisplayScreen(
                     recipeViewModel = recipeViewModel,
                     subCategoryOnClick = { subCategory ->
                         recipeViewModel.subcategorySelected(subCategory.name)
@@ -119,7 +122,7 @@ fun RecipeApp(
             }
 
             composable(route = Destination.RecipeBrowsing.name) {
-                RecipeBrowsingGrid(
+                RecipeBrowsingScreen(
                     recipeViewModel = recipeViewModel,
                     modifier = Modifier,
                     contentPadding = contentPadding,
@@ -128,7 +131,8 @@ fun RecipeApp(
                             recipe = recipe.name,
                             recipeList = recipeList,
                         )
-                        navController.navigate(Destination.SelectedRecipe.name) }
+                        navController.navigate(Destination.SelectedRecipe.name)
+                    }
                 )
             }
 
