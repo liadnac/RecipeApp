@@ -1,14 +1,17 @@
 package com.example.recipeapp.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.recipeapp.data.Category
 import com.example.recipeapp.data.PartialRecipe
 import com.example.recipeapp.data.Recipe
 import com.example.recipeapp.data.SubCategory
+import com.example.recipeapp.network.RecipeApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class RecipeViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(RecipeUiState())
@@ -42,18 +45,34 @@ class RecipeViewModel : ViewModel() {
     }
 
     fun initializeCategories() {
-        val categoryList = categorySubcategoryMap.entries.map {
-            CategoryCardState(
-                category = it.key,
-                subcategories = it.value
-            )
-        }
-        _uiState.update { currentState ->
-            currentState.copy(
-                categoryList = categoryList
-            )
+        viewModelScope.launch {
+            val categoryList = RecipeApi.retrofitService.getCategories()
+            _uiState.update { currentState ->
+                currentState.copy(
+                    categoryList = categoryList.map {
+                        CategoryCardState(
+                            category = it
+                        )
+                    }
+                )
+            }
         }
     }
+
+//    fun initializeCategories() {
+//        val categoryList =
+//            categorySubcategoryMap.entries.map {
+//            CategoryCardState(
+//                category = it.key,
+//                subcategories = it.value
+//            )
+//        }
+//        _uiState.update { currentState ->
+//            currentState.copy(
+//                categoryList = categoryList
+//            )
+//        }
+//    }
 
 
     // Temporary, delete later
