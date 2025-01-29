@@ -1,14 +1,56 @@
 [
   {
     "id": 1,
-    "name": "Kids"
+    "name": "Kids",
+    "subcategoryList": [
+      {
+        "id": 11,
+        "name": "Pancakes"
+      },
+      {
+        "id": 12,
+        "name": "Frozen Confections"
+      }
+    ]
   },
   {
     "id": 2,
-    "name": "Meals"
+    "name": "Meals",
+    "subcategoryList": [
+      {
+        "id": 13,
+        "name": "Breakfast"
+      },
+      {
+        "id": 14,
+        "name": "Lunch"
+      },
+      {
+        "id": 15,
+        "name": "Dinner"
+      }
+    ]
   },
   {
     "id": 3,
-    "name":"Baking"
+    "name":"Baking",
+    "subcategoryList": [
+      {
+        "id": 16,
+        "name":"Bread and dough"
+      },
+      {
+        "id": 17,
+        "name":"Cookies and Brownies"
+      },
+      {
+        "id": 18,
+        "name":"Cake and Muffins"
+      },
+      {
+        "id": 19,
+        "name":"Tarts and Pies"
+      }
+    ]
   }
 ]

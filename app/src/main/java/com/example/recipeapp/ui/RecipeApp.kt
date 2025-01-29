@@ -70,13 +70,7 @@ fun RecipeApp(
         mutableListOf(getFullRecipeFromJsonFile(context, "pumpkinPieRecipe.json"))
     recipeList.add(getFullRecipeFromJsonFile(context, "ChocolatePancakesRecipe.json"))
 
-    val recipeViewModel: RecipeViewModel = viewModel()
-    recipeViewModel.setCategorySubcategoryMap(
-        categoryList,
-        kidsSubCategoryList,
-        mealsSubCategoryList,
-        bakingSubCategoryList,
-    )
+    val recipeViewModel: RecipeViewModel = viewModel(factory = RecipeViewModel.Factory)
     recipeViewModel.setSubcategoryRecipesMap(
         kidsSubCategoryList,
         mealsSubCategoryList,

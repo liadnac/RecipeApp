@@ -1,17 +1,14 @@
 [
   {
     "id": 13,
-    "name": "Breakfast",
-    "categoryId": 2
+    "name": "Breakfast"
   },
   {
     "id": 14,
-    "name": "Lunch",
-    "categoryId": 2
+    "name": "Lunch"
   },
   {
     "id": 15,
-    "name": "Dinner",
-    "categoryId": 2
+    "name": "Dinner"
   }
 ]

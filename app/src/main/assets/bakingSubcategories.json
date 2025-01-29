@@ -1,22 +1,18 @@
 [
   {
     "id": 16,
-    "name":"Bread and dough",
-    "categoryId": 3
+    "name":"Bread and dough"
   },
   {
     "id": 17,
-    "name":"Cookies and Brownies",
-    "categoryId": 3
+    "name":"Cookies and Brownies"
   },
   {
     "id": 18,
-    "name":"Cake and Muffins",
-    "categoryId": 3
+    "name":"Cake and Muffins"
   },
   {
     "id": 19,
-    "name":"Tarts and Pies",
-    "categoryId": 3
+    "name":"Tarts and Pies"
   }
 ]

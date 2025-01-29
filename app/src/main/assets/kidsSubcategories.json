@@ -1,12 +1,10 @@
 [
   {
     "id": 11,
-    "name": "Pancakes",
-    "categoryId": 1
+    "name": "Pancakes"
   },
   {
     "id": 12,
-    "name": "Frozen Confections",
-    "categoryId": 1
+    "name": "Frozen Confections"
   }
 ]

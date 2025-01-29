@@ -48,7 +48,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recipeapp.R
 import com.example.recipeapp.data.Category
 import com.example.recipeapp.data.SubCategory
-import com.example.recipeapp.data.getCategoriesFromJsonFile
 import com.example.recipeapp.ui.CategoryCardState
 import com.example.recipeapp.ui.RecipeViewModel
 
@@ -142,7 +141,7 @@ fun CategoryCard(
             if (expanded) {
                 Spacer(modifier = Modifier.size(24.dp))
                 SubCategoryList(
-                    subCategoryList = category.subcategories,
+                    subCategoryList = category.category.subcategoryList,
                     subCategoryOnClick = subCategoryOnClick,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -199,16 +198,16 @@ fun SubCategoryList(
     }
 }
 
-val pancake: SubCategory = SubCategory(1, "Pancakes", 1)
-val popsicle: SubCategory = SubCategory(2, "Popsicles", 1)
-val kidsCategory: Category = Category(1, "Kids")
+val pancake: SubCategory = SubCategory(1, "Pancakes")
+val popsicle: SubCategory = SubCategory(2, "Popsicles")
+val kidsCategory: Category = Category(1, "Kids", listOf(pancake, popsicle))
 
 @Preview
 @Composable
 fun CategoryCardPreview() {
 
     CategoryCard(
-        category = CategoryCardState(category = Category(1, "Test")),
+        category = CategoryCardState(category = kidsCategory),
         subCategoryOnClick = {},
         modifier = Modifier
             .padding(4.dp)
@@ -229,11 +228,14 @@ fun CategoryGridPreview() {
     val context = LocalContext.current
     val categoryCardStateList = listOf(
         CategoryCardState(
-            Category(1, "test"), false, listOf(
-                SubCategory(12, "subsub", 1), SubCategory
-                    (13, "choco", 1)
-            )
-        ), CategoryCardState(Category(2,"test2"),false, listOf(SubCategory(15,"pancake",2)))
+            Category(
+                1, "test", listOf(
+                    SubCategory(12, "subsub"), SubCategory
+                        (13, "choco")
+                )
+            ),
+            false,
+        ), CategoryCardState(Category(2, "test2", listOf(SubCategory(15, "pancake"))), false)
     )
     CategoryGrid(
         subCategoryOnClick = {},

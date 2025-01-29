@@ -7,14 +7,14 @@ import kotlinx.serialization.json.Json
 @Serializable
 data class Category(
     val id: Int,
-    val name: String
+    val name: String,
+    val subcategoryList: List<SubCategory>
 )
 
 @Serializable
 data class SubCategory(
     val id: Int,
     val name: String,
-    val categoryId: Int,
 )
 
 fun getCategoriesFromJsonFile(

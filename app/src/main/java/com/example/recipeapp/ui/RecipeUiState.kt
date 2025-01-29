@@ -21,5 +21,4 @@ data class RecipeUiState(
 data class CategoryCardState(
     val category: Category,
     val isExpanded: Boolean = false,
-    val subcategories: List<SubCategory> = emptyList()
 )
