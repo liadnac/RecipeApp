@@ -8,6 +8,7 @@ import kotlinx.serialization.json.Json
 data class Category(
     val id: Int,
     val name: String,
+    val imgUrl: String,
     val subcategoryList: List<SubCategory>
 )
 

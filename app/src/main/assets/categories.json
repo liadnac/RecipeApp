@@ -2,6 +2,7 @@
   {
     "id": 1,
     "name": "Kids",
+    "imgUrl": "http://10.0.2.2:8000/Static/CategoryImages/KidsImg.jpg",
     "subcategoryList": [
       {
         "id": 11,
@@ -16,6 +17,7 @@
   {
     "id": 2,
     "name": "Meals",
+    "imgUrl": "http://10.0.2.2:8000/Static/CategoryImages/MealsImg.jpg",
     "subcategoryList": [
       {
         "id": 13,
@@ -34,6 +36,7 @@
   {
     "id": 3,
     "name":"Baking",
+    "imgUrl": "http://10.0.2.2:8000/Static/CategoryImages/BakingImg.jpg",
     "subcategoryList": [
       {
         "id": 16,

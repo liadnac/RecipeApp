@@ -58,6 +58,8 @@ dependencies {
 // Retrofit with Scalar Converter
     implementation(libs.converter.scalars)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
+    // Coil
+    implementation(libs.coil.compose)
     implementation(libs.okhttp)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

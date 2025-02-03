@@ -25,6 +25,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -36,8 +37,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -45,6 +49,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.recipeapp.R
 import com.example.recipeapp.data.Category
 import com.example.recipeapp.data.SubCategory
@@ -122,10 +128,14 @@ fun CategoryCard(
             Box(
 
             ) {
-                Image(
-                    painter = painterResource(R.drawable.baking),
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(category.category.imgUrl)
+                        .build(),
+                    placeholder = painterResource(R.drawable.baking),
                     contentDescription = "An image of the category",
-                    modifier = Modifier.fillMaxWidth()
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.alpha(0.7f)
                 )
                 Text(
                     category.category.name,
@@ -200,7 +210,7 @@ fun SubCategoryList(
 
 val pancake: SubCategory = SubCategory(1, "Pancakes")
 val popsicle: SubCategory = SubCategory(2, "Popsicles")
-val kidsCategory: Category = Category(1, "Kids", listOf(pancake, popsicle))
+val kidsCategory: Category = Category(1, "Kids", "", listOf(pancake, popsicle))
 
 @Preview
 @Composable
@@ -229,13 +239,13 @@ fun CategoryGridPreview() {
     val categoryCardStateList = listOf(
         CategoryCardState(
             Category(
-                1, "test", listOf(
+                1, "test", "", listOf(
                     SubCategory(12, "subsub"), SubCategory
                         (13, "choco")
                 )
             ),
             false,
-        ), CategoryCardState(Category(2, "test2", listOf(SubCategory(15, "pancake"))), false)
+        ), CategoryCardState(Category(2, "test2", "", listOf(SubCategory(15, "pancake"))), false)
     )
     CategoryGrid(
         subCategoryOnClick = {},
