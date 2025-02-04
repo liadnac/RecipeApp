@@ -13,19 +13,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.recipeapp.data.Category
-import com.example.recipeapp.data.PartialRecipe
 import com.example.recipeapp.data.Recipe
-import com.example.recipeapp.data.SubCategory
 import com.example.recipeapp.data.getCategoriesFromJsonFile
 import com.example.recipeapp.data.getFullRecipeFromJsonFile
-import com.example.recipeapp.data.getPartialRecipesFromJsonFile
 import com.example.recipeapp.data.getSubcategoriesFromJsonFile
 import com.example.recipeapp.navigation.Destination
 import com.example.recipeapp.ui.mainscreen.CategoryDisplayScreen
-import com.example.recipeapp.ui.mainscreen.CategoryGrid
 import com.example.recipeapp.ui.mainscreen.RecipeTopBar
-import com.example.recipeapp.ui.recipebrowsescreen.RecipeBrowsingGrid
 import com.example.recipeapp.ui.recipebrowsescreen.RecipeBrowsingScreen
 import com.example.recipeapp.ui.selectedrecipescreen.SelectedRecipeScreen
 
@@ -41,50 +35,15 @@ fun RecipeApp(
     )
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val context = LocalContext.current
-    val categoryList: List<Category> = getCategoriesFromJsonFile(context, "categories.json")
-    val kidsSubCategoryList: List<SubCategory> =
-        getSubcategoriesFromJsonFile(context, "kidsSubcategories.json")
-    val bakingSubCategoryList: List<SubCategory> =
-        getSubcategoriesFromJsonFile(context, "bakingSubcategories.json")
-    val mealsSubCategoryList: List<SubCategory> =
-        getSubcategoriesFromJsonFile(context, "mealsSubcategories.json")
-    val pancakeRecipeList: List<PartialRecipe> =
-        getPartialRecipesFromJsonFile(context, "pancakesRecipes.json")
-    val frozenConfectionsRecipeList: List<PartialRecipe> =
-        getPartialRecipesFromJsonFile(context, "frozenConfectionsRecipes.json")
-    val breakfastRecipeList: List<PartialRecipe> =
-        getPartialRecipesFromJsonFile(context, "breakfastRecipes.json")
-    val lunchRecipeList: List<PartialRecipe> =
-        getPartialRecipesFromJsonFile(context, "lunchRecipes.json")
-    val dinnerRecipeList: List<PartialRecipe> =
-        getPartialRecipesFromJsonFile(context, "dinnerRecipes.json")
-    val breadAndDoughRecipeList: List<PartialRecipe> =
-        getPartialRecipesFromJsonFile(context, "breadAndDoughRecipes.json")
-    val cakeAndMuffinsRecipeList: List<PartialRecipe> =
-        getPartialRecipesFromJsonFile(context, "cakeAndMuffinsRecipes.json")
-    val cookiesAndBrowniesRecipeList: List<PartialRecipe> =
-        getPartialRecipesFromJsonFile(context, "cookiesAndBrowniesRecipes.json")
-    val tartsAndPiesRecipeList: List<PartialRecipe> =
-        getPartialRecipesFromJsonFile(context, "tartsAndPiesRecipes.json")
+    getCategoriesFromJsonFile(context, "categories.json")
+    getSubcategoriesFromJsonFile(context, "kidsSubcategories.json")
+    getSubcategoriesFromJsonFile(context, "bakingSubcategories.json")
+    getSubcategoriesFromJsonFile(context, "mealsSubcategories.json")
     val recipeList: MutableList<Recipe> =
         mutableListOf(getFullRecipeFromJsonFile(context, "pumpkinPieRecipe.json"))
     recipeList.add(getFullRecipeFromJsonFile(context, "ChocolatePancakesRecipe.json"))
 
     val recipeViewModel: RecipeViewModel = viewModel(factory = RecipeViewModel.Factory)
-    recipeViewModel.setSubcategoryRecipesMap(
-        kidsSubCategoryList,
-        mealsSubCategoryList,
-        bakingSubCategoryList,
-        dinnerRecipeList,
-        lunchRecipeList,
-        breakfastRecipeList,
-        breadAndDoughRecipeList,
-        cakeAndMuffinsRecipeList,
-        cookiesAndBrowniesRecipeList,
-        pancakeRecipeList,
-        tartsAndPiesRecipeList,
-        frozenConfectionsRecipeList
-    )
     recipeViewModel.initializeCategories()
 
     Scaffold(
