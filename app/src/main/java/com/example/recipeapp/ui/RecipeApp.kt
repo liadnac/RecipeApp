@@ -14,9 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.recipeapp.data.Recipe
-import com.example.recipeapp.data.getCategoriesFromJsonFile
 import com.example.recipeapp.data.getFullRecipeFromJsonFile
-import com.example.recipeapp.data.getSubcategoriesFromJsonFile
 import com.example.recipeapp.navigation.Destination
 import com.example.recipeapp.ui.mainscreen.CategoryDisplayScreen
 import com.example.recipeapp.ui.mainscreen.RecipeTopBar
@@ -35,10 +33,6 @@ fun RecipeApp(
     )
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val context = LocalContext.current
-    getCategoriesFromJsonFile(context, "categories.json")
-    getSubcategoriesFromJsonFile(context, "kidsSubcategories.json")
-    getSubcategoriesFromJsonFile(context, "bakingSubcategories.json")
-    getSubcategoriesFromJsonFile(context, "mealsSubcategories.json")
     val recipeList: MutableList<Recipe> =
         mutableListOf(getFullRecipeFromJsonFile(context, "pumpkinPieRecipe.json"))
     recipeList.add(getFullRecipeFromJsonFile(context, "ChocolatePancakesRecipe.json"))
