@@ -12,13 +12,17 @@ import com.example.recipeapp.data.NetworkCategoryRepository
 import com.example.recipeapp.data.PartialRecipe
 import com.example.recipeapp.data.Recipe
 import com.example.recipeapp.data.SubCategory
+import com.example.recipeapp.data.SubcategoryRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class RecipeViewModel( private val categoryRepository: CategoryRepository) : ViewModel() {
+class RecipeViewModel(
+    private val categoryRepository: CategoryRepository,
+    private val subcategoryRepository: SubcategoryRepository
+) : ViewModel() {
     private val _uiState = MutableStateFlow(RecipeUiState())
     val uiState: StateFlow<RecipeUiState> = _uiState.asStateFlow()
     private var selectedSubCategory: SubCategory? = null
@@ -78,22 +82,26 @@ class RecipeViewModel( private val categoryRepository: CategoryRepository) : Vie
         }
     }
 
-    fun subcategorySelected(subCategory: String) {
+    fun subcategorySelected(subCategory: SubCategory) {
         _uiState.update { currentState ->
             currentState.copy(
-                subcategoryName = subCategory
+                subcategoryName = subCategory.name
             )
         }
-        selectedSubCategory = subcategoryToRecipesMap.keys.find { it.name == subCategory }
+        selectedSubCategory = subCategory
     }
 
     fun initializeRecipes() {
-        _uiState.update { currentState ->
-            subcategoryToRecipesMap[selectedSubCategory]?.let {
-                currentState.copy(
-                    subcategoryRecipes = it
+        viewModelScope.launch {
+            val recipesList =
+                subcategoryRepository.getSubcategoryRecipes(
+                    subcategoryId = selectedSubCategory!!.id
                 )
-            }!!
+            _uiState.update { currentState ->
+                currentState.copy(
+                    subcategoryRecipes = recipesList
+                )
+            }
         }
     }
 
@@ -117,7 +125,11 @@ class RecipeViewModel( private val categoryRepository: CategoryRepository) : Vie
             initializer {
                 val application = (this[APPLICATION_KEY] as RecipeApplication)
                 val categoryRepository = application.container.categoryRepository
-                RecipeViewModel(categoryRepository = categoryRepository)
+                val subcategoryRepository = application.container.subcategoryRepository
+                RecipeViewModel(
+                    categoryRepository = categoryRepository,
+                    subcategoryRepository = subcategoryRepository
+                )
             }
         }
     }

@@ -107,7 +107,7 @@ fun RecipeApp(
                 CategoryDisplayScreen(
                     recipeViewModel = recipeViewModel,
                     subCategoryOnClick = { subCategory ->
-                        recipeViewModel.subcategorySelected(subCategory.name)
+                        recipeViewModel.subcategorySelected(subCategory)
                         navController.navigate(Destination.RecipeBrowsing.name)
                     },
                     contentPadding = contentPadding,
