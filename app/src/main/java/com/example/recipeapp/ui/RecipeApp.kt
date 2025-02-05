@@ -6,15 +6,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.recipeapp.data.Recipe
-import com.example.recipeapp.data.getFullRecipeFromJsonFile
 import com.example.recipeapp.navigation.Destination
 import com.example.recipeapp.ui.mainscreen.CategoryDisplayScreen
 import com.example.recipeapp.ui.mainscreen.RecipeTopBar
@@ -32,11 +29,6 @@ fun RecipeApp(
         backStackEntry?.destination?.route ?: Destination.Start.name
     )
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    val context = LocalContext.current
-    val recipeList: MutableList<Recipe> =
-        mutableListOf(getFullRecipeFromJsonFile(context, "pumpkinPieRecipe.json"))
-    recipeList.add(getFullRecipeFromJsonFile(context, "ChocolatePancakesRecipe.json"))
-
     val recipeViewModel: RecipeViewModel = viewModel(factory = RecipeViewModel.Factory)
     recipeViewModel.initializeCategories()
 
@@ -75,8 +67,7 @@ fun RecipeApp(
                     contentPadding = contentPadding,
                     recipeOnClick = { recipe ->
                         recipeViewModel.updateSelectedRecipe(
-                            recipe = recipe.name,
-                            recipeList = recipeList,
+                            recipe = recipe,
                         )
                         navController.navigate(Destination.SelectedRecipe.name)
                     }

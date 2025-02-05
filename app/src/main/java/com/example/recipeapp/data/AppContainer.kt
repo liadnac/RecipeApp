@@ -9,6 +9,7 @@ import retrofit2.Retrofit
 interface AppContainer {
     val categoryRepository: CategoryRepository
     val subcategoryRepository: SubcategoryRepository
+    val recipeRepository: RecipeRepository
 }
 
 class DefaultAppContainer : AppContainer {
@@ -29,5 +30,9 @@ class DefaultAppContainer : AppContainer {
 
     override val subcategoryRepository: SubcategoryRepository by lazy {
         NetworkSubcategoryRepository(retrofitService)
+    }
+
+    override val recipeRepository: RecipeRepository by lazy {
+        NetworkRecipeRepository(retrofitService)
     }
 }

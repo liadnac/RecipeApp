@@ -11,6 +11,7 @@ import com.example.recipeapp.data.CategoryRepository
 import com.example.recipeapp.data.NetworkCategoryRepository
 import com.example.recipeapp.data.PartialRecipe
 import com.example.recipeapp.data.Recipe
+import com.example.recipeapp.data.RecipeRepository
 import com.example.recipeapp.data.SubCategory
 import com.example.recipeapp.data.SubcategoryRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,10 +19,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 
 class RecipeViewModel(
     private val categoryRepository: CategoryRepository,
-    private val subcategoryRepository: SubcategoryRepository
+    private val subcategoryRepository: SubcategoryRepository,
+    private val recipeRepository: RecipeRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(RecipeUiState())
     val uiState: StateFlow<RecipeUiState> = _uiState.asStateFlow()
@@ -65,19 +68,16 @@ class RecipeViewModel(
         }
     }
 
-    fun updateSelectedRecipe(recipe: String, recipeList: List<Recipe>) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                selectedRecipeName = recipe,
-//  Temporary way to check that the Ui state updates, should change!
-                selectedRecipe = if (recipe.length > 15) {
-                    recipeList[0]
-                } else {
-                    recipeList[1]
-                }
-            )
+    fun updateSelectedRecipe(recipe: PartialRecipe) {
+        viewModelScope.launch {
+            val fullRecipe = recipeRepository.getSelectedRecipe(recipeId = recipe.id)
+            _uiState.update { currentState ->
+                currentState.copy(
+                    selectedRecipeName = recipe.name,
+                    selectedRecipe = fullRecipe
+                )
+            }
         }
-
     }
 
     companion object {
@@ -86,9 +86,11 @@ class RecipeViewModel(
                 val application = (this[APPLICATION_KEY] as RecipeApplication)
                 val categoryRepository = application.container.categoryRepository
                 val subcategoryRepository = application.container.subcategoryRepository
+                val recipeRepository = application.container.recipeRepository
                 RecipeViewModel(
                     categoryRepository = categoryRepository,
-                    subcategoryRepository = subcategoryRepository
+                    subcategoryRepository = subcategoryRepository,
+                    recipeRepository = recipeRepository
                 )
             }
         }

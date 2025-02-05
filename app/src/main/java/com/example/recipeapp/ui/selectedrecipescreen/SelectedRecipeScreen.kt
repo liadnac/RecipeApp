@@ -36,11 +36,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recipeapp.R
+import com.example.recipeapp.data.PartialRecipe
 import com.example.recipeapp.data.Recipe
 import com.example.recipeapp.data.cookTimeFormater
 import com.example.recipeapp.data.getFullRecipeFromJsonFile
 import com.example.recipeapp.ui.RecipeViewModel
 import kotlinx.coroutines.launch
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 @Composable
 fun SelectedRecipeScreen(
@@ -50,8 +53,8 @@ fun SelectedRecipeScreen(
 ) {
     val recipeUiState by recipeViewModel.uiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
-    val recipe = recipeUiState.selectedRecipe
-    val pagerState = rememberPagerState(pageCount = { recipe?.recipeParts?.size ?: 1 })
+    val recipe = recipeUiState.selectedRecipe!!
+    val pagerState = rememberPagerState(pageCount = { recipe.recipeParts.size })
     Column(
         modifier = modifier
             .padding(contentPadding)
@@ -60,20 +63,18 @@ fun SelectedRecipeScreen(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small)),
         horizontalAlignment = Alignment.Start
     ) {
-        if (recipe != null) {
-            Text(
-                text = recipe.name,
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_small))
-            )
-        }
-        if (recipe != null) {
-            Text(
-                text = recipe.description,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
-            )
-        }
+        Text(
+            text = recipe.name,
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_small))
+        )
+
+        Text(
+            text = recipe.description,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
+        )
+
         Image(
             painter = painterResource(R.drawable.pumpkin_pie),
             contentDescription = stringResource(R.string.recipe_image_content_desc),
@@ -87,29 +88,25 @@ fun SelectedRecipeScreen(
             modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (recipe != null) {
-                IconAndTextColumn(
-                    title = "Total time",
-                    icon = R.drawable.clock_svgrepo_com,
-                    iconDescription = stringResource(R.string.clock_icon),
-                    mainText = cookTimeFormater(recipe.cookTime.readyIn)
-                )
-            }
-            if (recipe != null) {
-                IconAndTextColumn(
-                    title = "Prep time",
-                    icon = R.drawable.hat_chef_svgrepo_com,
-                    iconDescription = stringResource(R.string.prep_icon),
-                    mainText = cookTimeFormater(recipe.cookTime.handsOn)
-                )
-            }
+            IconAndTextColumn(
+                title = "Total time",
+                icon = R.drawable.clock_svgrepo_com,
+                iconDescription = stringResource(R.string.clock_icon),
+                mainText = cookTimeFormater(recipe.cookTime.readyIn)
+            )
+            IconAndTextColumn(
+                title = "Prep time",
+                icon = R.drawable.hat_chef_svgrepo_com,
+                iconDescription = stringResource(R.string.prep_icon),
+                mainText = cookTimeFormater(recipe.cookTime.handsOn)
+            )
 
         }
         TabRow(
             selectedTabIndex = pagerState.currentPage,
             modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
         ) {
-            recipe?.recipeParts?.forEachIndexed { index, item ->
+            recipe.recipeParts.forEachIndexed { index, item ->
                 Tab(
                     selected = index == pagerState.currentPage,
                     text = {
@@ -125,10 +122,9 @@ fun SelectedRecipeScreen(
         }
         HorizontalPager(
             state = pagerState
-        ) {page ->
-            if (recipe != null) {
-                RecipePartScreen(recipePart =  recipe.recipeParts[page])
-            }
+        ) { page ->
+            RecipePartScreen(recipePart = recipe.recipeParts[page])
+
         }
 
 
@@ -171,11 +167,8 @@ fun IconAndTextColumn(
 fun SelectedRecipeScreenPreview() {
     val context = LocalContext.current
     val recipeViewModel: RecipeViewModel = viewModel()
-    val recipeList: MutableList<Recipe> = mutableListOf(getFullRecipeFromJsonFile(context, "pumpkinPieRecipe.json"))
-    recipeList.add(getFullRecipeFromJsonFile(context, "ChocolatePancakesRecipe.json"))
     recipeViewModel.updateSelectedRecipe(
-        recipe = "Pumpkin Pie",
-        recipeList = recipeList,
+        recipe = PartialRecipe(1,"Pumpkin Pie", 30.toDuration(DurationUnit.MINUTES), 11)
     )
     SelectedRecipeScreen(recipeViewModel)
 }
