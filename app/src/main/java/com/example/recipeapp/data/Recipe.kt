@@ -30,6 +30,7 @@ data class PartialRecipe(
 data class Recipe(
     val id: Int,
     val name: String,
+    val imgUrl: String,
     val description: String,
     val cookTime: CookTime,
     val recipeParts: List<RecipePart>,

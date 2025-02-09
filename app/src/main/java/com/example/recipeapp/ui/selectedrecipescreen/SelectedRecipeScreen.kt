@@ -35,6 +35,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.recipeapp.R
 import com.example.recipeapp.data.PartialRecipe
 import com.example.recipeapp.data.Recipe
@@ -75,15 +77,18 @@ fun SelectedRecipeScreen(
             modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
         )
 
-        Image(
-            painter = painterResource(R.drawable.pumpkin_pie),
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current).data(recipe.imgUrl).build(),
             contentDescription = stringResource(R.string.recipe_image_content_desc),
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
                 .size(220.dp)
                 .padding(horizontal = dimensionResource(R.dimen.padding_small)),
-        )
+            placeholder = painterResource(R.drawable.pumpkin_pie),
+
+            )
+
         Row(
             modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
             verticalAlignment = Alignment.CenterVertically
@@ -111,9 +116,7 @@ fun SelectedRecipeScreen(
                     selected = index == pagerState.currentPage,
                     text = {
                         Text(
-                            text = item.name,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
+                            text = item.name, maxLines = 2, overflow = TextOverflow.Ellipsis
                         )
                     },
                     onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
@@ -133,11 +136,7 @@ fun SelectedRecipeScreen(
 
 @Composable
 fun IconAndTextColumn(
-    title: String,
-    @DrawableRes
-    icon: Int,
-    iconDescription: String? = null,
-    mainText: String
+    title: String, @DrawableRes icon: Int, iconDescription: String? = null, mainText: String
 
 ) {
     Column(
@@ -168,7 +167,7 @@ fun SelectedRecipeScreenPreview() {
     val context = LocalContext.current
     val recipeViewModel: RecipeViewModel = viewModel()
     recipeViewModel.updateSelectedRecipe(
-        recipe = PartialRecipe(1,"Pumpkin Pie","", 30.toDuration(DurationUnit.MINUTES), 11)
+        recipe = PartialRecipe(1, "Pumpkin Pie", "", 30.toDuration(DurationUnit.MINUTES), 11)
     )
     SelectedRecipeScreen(recipeViewModel)
 }
