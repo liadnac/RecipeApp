@@ -18,22 +18,3 @@ data class SubCategory(
     val name: String,
 )
 
-fun getCategoriesFromJsonFile(
-    context: Context,
-    fileName: String
-): List<Category> {
-    val jsonString: String = context.assets.open(fileName).bufferedReader().use {
-        it.readText()
-    }
-    return Json.decodeFromString<List<Category>>(jsonString)
-}
-
-fun getSubcategoriesFromJsonFile(
-    context: Context,
-    fileName: String
-): List<SubCategory> {
-    val jsonString: String = context.assets.open(fileName).bufferedReader().use {
-        it.readText()
-    }
-    return Json.decodeFromString<List<SubCategory>>(jsonString)
-}

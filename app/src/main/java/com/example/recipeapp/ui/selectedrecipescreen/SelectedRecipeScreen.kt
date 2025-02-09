@@ -168,7 +168,7 @@ fun SelectedRecipeScreenPreview() {
     val context = LocalContext.current
     val recipeViewModel: RecipeViewModel = viewModel()
     recipeViewModel.updateSelectedRecipe(
-        recipe = PartialRecipe(1,"Pumpkin Pie", 30.toDuration(DurationUnit.MINUTES), 11)
+        recipe = PartialRecipe(1,"Pumpkin Pie","", 30.toDuration(DurationUnit.MINUTES), 11)
     )
     SelectedRecipeScreen(recipeViewModel)
 }

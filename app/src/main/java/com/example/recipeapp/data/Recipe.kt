@@ -16,6 +16,7 @@ import kotlin.time.Duration
 data class PartialRecipe(
     val id: Int,
     val name: String,
+    val imgUrl: String,
     val cookTime: Duration,
     val subcategoryId: Int
 )
