@@ -15,8 +15,8 @@ class DataUnitTest {
     @Test
     fun testPartialRecipeSerialization() {
         val original: List<PartialRecipe> = listOf(
-            PartialRecipe(1, "Test", 123.toDuration(DurationUnit.SECONDS), 1),
-            PartialRecipe(2, "Test2", 1234.toDuration(DurationUnit.SECONDS), 1)
+            PartialRecipe(1, "Test", "", 123.toDuration(DurationUnit.SECONDS), 1),
+            PartialRecipe(2, "Test2", "", 1234.toDuration(DurationUnit.SECONDS), 1)
         )
         val jsonString = Json.encodeToString(original)
         val deserialized = Json.decodeFromString<List<PartialRecipe>>(jsonString)
@@ -40,7 +40,8 @@ class DataUnitTest {
             cookTime = cookTime,
             recipeParts = listOf(recipePart),
             subcategoryId = 1,
-            description = "desc"
+            description = "desc",
+            imgUrl = ""
         )
         val jsonString = Json.encodeToString(original)
         val deserialized = Json.decodeFromString<Recipe>(jsonString)

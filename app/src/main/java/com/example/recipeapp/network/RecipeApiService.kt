@@ -8,15 +8,15 @@ import retrofit2.http.Path
 
 
 interface RecipeApiService {
-    @GET("categories/content.json")
+    @GET("categories")
     suspend fun getCategories(): List<Category>
 
-    @GET("subcategories/{subcategoryId}/recipes/content.json")
+    @GET("subcategories/{subcategoryId}/recipes")
     suspend fun getSubcategoryRecipes(
         @Path("subcategoryId") subcategoryId: Int,
     ): List<PartialRecipe>
 
-    @GET("recipes/{recipeId}/content.json")
+    @GET("recipes/{recipeId}")
     suspend fun getSelectedRecipe(
         @Path("recipeId") recipeId: Int,
     ): Recipe

@@ -55,7 +55,7 @@ fun SelectedRecipeScreen(
 ) {
     val recipeUiState by recipeViewModel.uiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
-    val recipe = recipeUiState.selectedRecipe!!
+    val recipe = recipeUiState.selectedRecipe ?: return
     val pagerState = rememberPagerState(pageCount = { recipe.recipeParts.size })
     Column(
         modifier = modifier

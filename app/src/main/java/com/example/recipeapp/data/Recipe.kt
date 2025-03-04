@@ -52,7 +52,7 @@ data class CookTime(
 /**
  * Data class for recipe parts.
  * Each recipe part contains the name, ingredients and instructions for a part of the recipe.
- * For example, a pie recipe would contain a crust recipe part, with its' matching ingredients and instructions.
+ * For example, a pie recipe would contain a crust recipe part, with its matching ingredients and instructions.
  * Matches the format received from `/recipes/{recipeId}`.
  */
 @Serializable
