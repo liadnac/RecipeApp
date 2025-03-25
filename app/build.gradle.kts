@@ -1,18 +1,18 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("com.google.devtools.ksp")
-    kotlin("plugin.serialization") version "1.9.23"
+    alias(libs.plugins.kotlin.compose)
+    kotlin("plugin.serialization") version "2.0.0"
 }
 
 android {
-    namespace = "com.example.recipeapp"
+    namespace = "sh.deut.recipeapp"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.recipeapp"
+        applicationId = "sh.deut.recipeapp"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -32,11 +32,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     buildFeatures {
         compose = true
@@ -74,9 +74,7 @@ dependencies {
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.navigation.compose)
-    ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation (libs.gson)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
@@ -86,5 +84,4 @@ dependencies {
     androidTestImplementation(libs.kotlinx.coroutines.test.v164)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
 }
