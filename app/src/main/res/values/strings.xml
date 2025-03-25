@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Recipe App</string>
+    <string name="app_name">Recipes By Liad</string>
     <string name="recipe_browse">Recipe Browsing</string>
     <string name="selected_recipe">Selected Recipe</string>
     <string name="back_button">Back</string>
