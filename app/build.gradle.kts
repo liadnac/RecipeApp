@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "sh.deut.recipeapp"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "sh.deut.recipeapp"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -47,9 +47,6 @@ android {
         buildConfig = true
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.11"
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -60,7 +57,7 @@ android {
 dependencies {
 
     // Retrofit
-    implementation(libs.retrofit.v290)
+    implementation(libs.retrofit)
 // Retrofit with Scalar Converter
     implementation(libs.converter.scalars)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
@@ -87,7 +84,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation(libs.kotlinx.coroutines.test.v164)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
