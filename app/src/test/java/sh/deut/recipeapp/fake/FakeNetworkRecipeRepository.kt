@@ -5,6 +5,9 @@ import sh.deut.recipeapp.data.RecipeRepository
 
 class FakeNetworkRecipeRepository : RecipeRepository {
     override suspend fun getSelectedRecipe(recipeId: Int): Recipe {
-        return FakeDataSource.fullRecipe
+        return when (recipeId) {
+            1 -> FakeDataSource.fullRecipeBasedOnRecipe1
+            else -> FakeDataSource.fullRecipe
+        }
     }
 }

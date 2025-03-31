@@ -6,20 +6,17 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import sh.deut.recipeapp.RecipeApplication
-import sh.deut.recipeapp.data.CategoryRepository
-import sh.deut.recipeapp.data.NetworkCategoryRepository
-import sh.deut.recipeapp.data.PartialRecipe
-import sh.deut.recipeapp.data.Recipe
-import sh.deut.recipeapp.data.RecipeRepository
-import sh.deut.recipeapp.data.SubCategory
-import sh.deut.recipeapp.data.SubcategoryRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
+import sh.deut.recipeapp.RecipeApplication
+import sh.deut.recipeapp.data.CategoryRepository
+import sh.deut.recipeapp.data.PartialRecipe
+import sh.deut.recipeapp.data.RecipeRepository
+import sh.deut.recipeapp.data.SubCategory
+import sh.deut.recipeapp.data.SubcategoryRepository
 
 class RecipeViewModel(
     private val categoryRepository: CategoryRepository,
@@ -39,8 +36,7 @@ class RecipeViewModel(
                         CategoryCardState(
                             category = it
                         )
-                    }
-                )
+                    })
             }
         }
     }
@@ -56,10 +52,9 @@ class RecipeViewModel(
 
     fun initializeRecipes() {
         viewModelScope.launch {
-            val recipesList =
-                subcategoryRepository.getSubcategoryRecipes(
-                    subcategoryId = selectedSubCategory!!.id
-                )
+            val recipesList = subcategoryRepository.getSubcategoryRecipes(
+                subcategoryId = selectedSubCategory!!.id
+            )
             _uiState.update { currentState ->
                 currentState.copy(
                     subcategoryRecipes = recipesList
@@ -73,8 +68,7 @@ class RecipeViewModel(
             val fullRecipe = recipeRepository.getSelectedRecipe(recipeId = recipe.id)
             _uiState.update { currentState ->
                 currentState.copy(
-                    selectedRecipeName = recipe.name,
-                    selectedRecipe = fullRecipe
+                    selectedRecipeName = recipe.name, selectedRecipe = fullRecipe
                 )
             }
         }
