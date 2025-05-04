@@ -21,10 +21,11 @@ android {
             useSupportLibrary = true
         }
     }
+    val baseUrl = project.findProperty("baseUrl")?.toString() ?: "http://10.0.2.2:8080"
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080\"")
+            buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
             isDebuggable = true
         }
         release {
