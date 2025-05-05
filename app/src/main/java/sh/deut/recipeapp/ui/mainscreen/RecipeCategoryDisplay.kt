@@ -139,7 +139,7 @@ fun CategoryCard(
                 )
                 Text(
                     category.category.name,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier
                         .padding(dimensionResource(id = R.dimen.padding_small))
                         .align(Alignment.BottomCenter),
