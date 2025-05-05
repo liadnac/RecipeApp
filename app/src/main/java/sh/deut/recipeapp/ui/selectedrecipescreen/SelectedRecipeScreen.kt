@@ -2,6 +2,7 @@ package sh.deut.recipeapp.ui.selectedrecipescreen
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -78,15 +80,14 @@ fun SelectedRecipeScreen(
         )
 
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current).data(recipe.imgUrl).build(),
+            model = ImageRequest.Builder(LocalContext.current).crossfade(500).data(recipe.imgUrl).build(),
             contentDescription = stringResource(R.string.recipe_image_content_desc),
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
+                .background(Color.LightGray)
                 .size(220.dp)
                 .padding(horizontal = dimensionResource(R.dimen.padding_small)),
-            placeholder = painterResource(R.drawable.pumpkin_pie),
-
             )
 
         Row(

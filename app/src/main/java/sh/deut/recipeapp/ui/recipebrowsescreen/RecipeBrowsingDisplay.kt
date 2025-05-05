@@ -1,6 +1,7 @@
 package sh.deut.recipeapp.ui.recipebrowsescreen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -116,12 +118,11 @@ fun RecipeCard(
 
         Box {
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
+                model = ImageRequest.Builder(LocalContext.current).crossfade(500)
                     .data(recipe.imgUrl)
                     .build(),
-                modifier = Modifier.fillMaxWidth().size(210.dp),
+                modifier = Modifier.fillMaxWidth().background(Color.LightGray).size(210.dp),
                 contentScale = ContentScale.Crop,
-                placeholder = painterResource(R.drawable.pasta),
                 contentDescription = stringResource(R.string.recipe_image_content_desc)
             )
 

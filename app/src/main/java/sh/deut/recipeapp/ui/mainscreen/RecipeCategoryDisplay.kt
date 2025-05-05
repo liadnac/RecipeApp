@@ -129,7 +129,7 @@ fun CategoryCard(
 
             ) {
                 AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
+                    model = ImageRequest.Builder(LocalContext.current).crossfade(500)
                         .data(category.category.imgUrl)
                         .build(),
                     placeholder = painterResource(R.drawable.baking),
