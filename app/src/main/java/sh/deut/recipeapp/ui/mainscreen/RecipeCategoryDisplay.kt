@@ -3,17 +3,14 @@ package sh.deut.recipeapp.ui.mainscreen
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
@@ -21,13 +18,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -37,12 +34,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -56,6 +53,7 @@ import sh.deut.recipeapp.data.Category
 import sh.deut.recipeapp.data.SubCategory
 import sh.deut.recipeapp.ui.CategoryCardState
 import sh.deut.recipeapp.ui.RecipeViewModel
+
 
 @Composable
 fun CategoryDisplayScreen(
@@ -74,6 +72,7 @@ fun CategoryDisplayScreen(
     )
 }
 
+
 @Composable
 fun CategoryGrid(
     categoryCardStateList: List<CategoryCardState>,
@@ -91,9 +90,7 @@ fun CategoryGrid(
         ) {
         items(categoryCardStateList) { category ->
             CategoryCard(
-                category = category,
-                modifier = Modifier,
-                subCategoryOnClick = subCategoryOnClick
+                category = category, modifier = Modifier, subCategoryOnClick = subCategoryOnClick
             )
         }
 
@@ -111,13 +108,19 @@ fun CategoryCard(
     val rotationState by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f, label = ""
     )
+    var cardWidth by remember { mutableStateOf(0.dp) }
+    val density = LocalDensity.current
 
 
     Card(
         modifier = modifier
             .padding(dimensionResource(id = R.dimen.padding_medium))
             .fillMaxWidth()
-            .animateContentSize(), // This is where the magic happens!
+            .animateContentSize()
+            .onGloballyPositioned { coordinates ->
+                val widthPx = coordinates.size.width
+                cardWidth = with(density) { widthPx.toDp() }
+            },
         onClick = { expanded = !expanded },
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
     ) {
@@ -125,13 +128,10 @@ fun CategoryCard(
             horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()
 
         ) {
-            Box(
-
-            ) {
+            Box {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current).crossfade(500)
-                        .data(category.category.imgUrl)
-                        .build(),
+                        .data(category.category.imgUrl).build(),
                     placeholder = painterResource(R.drawable.baking),
                     contentDescription = "An image of the category",
                     contentScale = ContentScale.Fit,
@@ -148,8 +148,11 @@ fun CategoryCard(
 
                 )
             }
-            if (expanded) {
-                Spacer(modifier = Modifier.size(24.dp))
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.width(cardWidth)
+            ) {
                 SubCategoryList(
                     subCategoryList = category.category.subcategoryList,
                     subCategoryOnClick = subCategoryOnClick,
@@ -157,8 +160,6 @@ fun CategoryCard(
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.primaryContainer)
                 )
-                HorizontalDivider()
-                Spacer(modifier = Modifier.size(24.dp))
             }
             IconButton(modifier = Modifier
                 .alpha(0.2f)
@@ -187,23 +188,18 @@ fun SubCategoryList(
         modifier, horizontalAlignment = Alignment.CenterHorizontally
     ) {
         subCategoryList.forEach { subCategory ->
+            DropdownMenuItem(
+                text = {
+                Text(
+                    subCategory.name,
+                    textAlign = TextAlign.Left,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }, onClick = { subCategoryOnClick(subCategory) }, modifier = Modifier.padding(
+                dimensionResource(id = R.dimen.padding_medium)
+            )
+            )
             HorizontalDivider()
-            Row(
-                modifier = Modifier
-            ) {
-                TextButton(
-                    onClick = { subCategoryOnClick(subCategory) },
-                    modifier = Modifier.padding(
-                        dimensionResource(id = R.dimen.padding_medium)
-                    ),
-                ) {
-                    Text(
-                        subCategory.name, textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-            }
-
         }
     }
 }
@@ -240,8 +236,7 @@ fun CategoryGridPreview() {
         CategoryCardState(
             Category(
                 1, "test", "", listOf(
-                    SubCategory(12, "subsub"), SubCategory
-                        (13, "choco")
+                    SubCategory(12, "subsub"), SubCategory(13, "choco")
                 )
             ),
             false,
