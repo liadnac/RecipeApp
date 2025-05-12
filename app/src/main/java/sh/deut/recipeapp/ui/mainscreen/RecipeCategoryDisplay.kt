@@ -11,9 +11,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Card
@@ -81,8 +81,8 @@ fun CategoryGrid(
     contentPadding: PaddingValues = PaddingValues(4.dp),
 ) {
 
-    LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Adaptive(minSize = 144.dp),
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 144.dp),
         modifier = modifier.padding(horizontal = 4.dp),
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.SpaceAround,
