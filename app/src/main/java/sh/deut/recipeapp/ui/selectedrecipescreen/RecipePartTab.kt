@@ -10,10 +10,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,12 +21,16 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import sh.deut.recipeapp.R
-import sh.deut.recipeapp.data.RecipePart
+import sh.deut.recipeapp.ui.UiIngredient
+import sh.deut.recipeapp.ui.UiInstruction
+import sh.deut.recipeapp.ui.UiRecipePart
 
 @Composable
-fun RecipePartScreen(
+fun RecipePartTab(
     modifier: Modifier = Modifier,
-    recipePart: RecipePart
+    recipePart: UiRecipePart,
+    onInstructionCheckedChanged: (Boolean, Int) -> Unit,
+    onIngredientCheckedChanged: (Boolean, Int) -> Unit
 ) {
     Column(
         modifier = modifier.padding(dimensionResource(R.dimen.padding_small)),
@@ -54,7 +54,10 @@ fun RecipePartScreen(
                 style = MaterialTheme.typography.titleMedium
             )
         }
-        IngredientsList(ingredientsList = recipePart.ingredients)
+        IngredientsList(
+            ingredientsList = recipePart.ingredients,
+            onIngredientCheckedChanged = onIngredientCheckedChanged
+        )
         Spacer(modifier = Modifier.size(dimensionResource(R.dimen.spacer)))
         Row {
             Icon(
@@ -70,7 +73,10 @@ fun RecipePartScreen(
                 style = MaterialTheme.typography.titleMedium
             )
         }
-        InstructionsList(instructionsList = recipePart.instructions)
+        InstructionsList(
+            instructionsList = recipePart.instructions,
+            onInstructionCheckedChanged = onInstructionCheckedChanged
+        )
         Spacer(modifier = Modifier.size(dimensionResource(R.dimen.spacer)))
     }
 }
@@ -79,13 +85,17 @@ fun RecipePartScreen(
 @Composable
 fun IngredientsList(
     modifier: Modifier = Modifier,
-    ingredientsList: List<String>
+    ingredientsList: List<UiIngredient>,
+    onIngredientCheckedChanged: (Boolean, Int) -> Unit
 ) {
     Column(
         modifier = modifier
     ) {
-        ingredientsList.forEach { ingredient ->
-            RowWithCheckbox(text = ingredient)
+        ingredientsList.forEachIndexed { index, ingredient ->
+            RowWithCheckbox(
+                text = ingredient.ingredient,
+                isChecked = ingredient.isChecked,
+                onCheckedChanged = { onIngredientCheckedChanged(it, index) })
         }
     }
 }
@@ -93,13 +103,18 @@ fun IngredientsList(
 @Composable
 fun InstructionsList(
     modifier: Modifier = Modifier,
-    instructionsList: List<String>
+    instructionsList: List<UiInstruction>,
+    onInstructionCheckedChanged: (Boolean, Int) -> Unit
 ) {
     Column(
         modifier = modifier
     ) {
         instructionsList.forEachIndexed { index, instruction ->
-            RowWithCheckbox(text = instruction, rowNumber = index + 1)
+            RowWithCheckbox(
+                text = instruction.instruction,
+                isChecked = instruction.isChecked,
+                rowNumber = index + 1,
+                onCheckedChanged = { onInstructionCheckedChanged(it, index) })
         }
     }
 }
@@ -108,18 +123,18 @@ fun InstructionsList(
 fun RowWithCheckbox(
     modifier: Modifier = Modifier,
     text: String,
+    isChecked: Boolean,
+    onCheckedChanged: (Boolean) -> Unit,
     rowNumber: Int? = null
 ) {
-    var isChecked by remember { mutableStateOf(false) }
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Checkbox(
-            modifier = Modifier,
-            checked = isChecked,
-            onCheckedChange = { isChecked = it }
-        )
+            modifier = Modifier, checked = isChecked, onCheckedChange = {
+                onCheckedChanged(it)
+            })
         val textDecoration = if (isChecked) {
             TextDecoration.LineThrough
         } else {
@@ -140,26 +155,39 @@ fun RowWithCheckbox(
 }
 
 
+fun exampleOnChecked(isChecked: Boolean, index: Int) {}
+
 @Preview(showBackground = true)
 @Composable
 fun RecipePartScreenPreview() {
-    val exampleRecipePart =
-        RecipePart(
-            name = "Crust", ingredients = listOf("100g butter", "2 eggs"),
-            instructions = listOf("Mix the butter with eggs", "Allow the dough to rest")
+    val exampleRecipePart = UiRecipePart(
+        name = "Crust",
+        ingredients = listOf(UiIngredient("100g butter"), UiIngredient("2 eggs")),
+        instructions = listOf(
+            UiInstruction("Mix the butter with eggs"), UiInstruction("Allow the dough to rest")
         )
-    RecipePartScreen(recipePart = exampleRecipePart)
+    )
+
+    RecipePartTab(
+        recipePart = exampleRecipePart,
+        modifier = Modifier,
+        onInstructionCheckedChanged = { bool, index -> exampleOnChecked(bool, index) },
+        onIngredientCheckedChanged = { bool, index -> exampleOnChecked(bool, index) })
 }
 
 @Preview(showBackground = true)
 @Composable
 fun IngredientsListPreview() {
-    val exampleList = listOf("100g butter", "2 eggs")
-    IngredientsList(ingredientsList = exampleList)
+    val exampleList = listOf(UiIngredient("100g butter"), UiIngredient("2 eggs"))
+    IngredientsList(
+        ingredientsList = exampleList,
+        modifier = Modifier,
+        onIngredientCheckedChanged = { bool, index -> exampleOnChecked(bool, index) })
 }
 
 @Preview(showBackground = true)
 @Composable
 fun IngredientRowPreview() {
-    RowWithCheckbox(text = "100g butter")
+    RowWithCheckbox(
+        text = "100g butter", modifier = Modifier, isChecked = true, onCheckedChanged = {})
 }

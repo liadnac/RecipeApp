@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import sh.deut.recipeapp.RecipeApplication
 import sh.deut.recipeapp.data.CategoryRepository
 import sh.deut.recipeapp.data.PartialRecipe
+import sh.deut.recipeapp.data.Recipe
 import sh.deut.recipeapp.data.RecipeRepository
 import sh.deut.recipeapp.data.SubCategory
 import sh.deut.recipeapp.data.SubcategoryRepository
@@ -26,6 +27,11 @@ class RecipeViewModel(
     private val _uiState = MutableStateFlow(RecipeUiState())
     val uiState: StateFlow<RecipeUiState> = _uiState.asStateFlow()
     private var selectedSubCategory: SubCategory? = null
+    private var selectedRecipe: Recipe? = null
+    private val recipeIngredientStatusMap: MutableMap<Triple<Int, Int, Int>, Boolean> =
+        mutableMapOf()
+    private val recipeInstructionStatusMap: MutableMap<Triple<Int, Int, Int>, Boolean> =
+        mutableMapOf()
 
     fun initializeCategories() {
         viewModelScope.launch {
@@ -63,12 +69,71 @@ class RecipeViewModel(
         }
     }
 
+    private fun recipeToUiRecipe(recipe: Recipe): UiRecipe {
+        return UiRecipe(
+            id = recipe.id,
+            name = recipe.name,
+            imgUrl = recipe.imgUrl,
+            description = recipe.description,
+            cookTime = recipe.cookTime,
+            recipeParts = recipe.recipeParts.mapIndexed { partIndex, recipePart ->
+                UiRecipePart(
+                    name = recipePart.name,
+                    ingredients = recipePart.ingredients.mapIndexed { index, it ->
+                        UiIngredient(
+                            ingredient = it, isChecked = recipeIngredientStatusMap[Triple(
+                                recipe.id, partIndex, index
+                            )] ?: false
+                        )
+                    },
+                    instructions = recipePart.instructions.mapIndexed { index, it ->
+                        UiInstruction(
+                            instruction = it, isChecked = recipeInstructionStatusMap[Triple(
+                                recipe.id, partIndex, index
+                            )] ?: false
+                        )
+                    })
+            },
+            subcategoryId = recipe.subcategoryId,
+        )
+    }
+
     fun updateSelectedRecipe(recipe: PartialRecipe) {
         viewModelScope.launch {
             val fullRecipe = recipeRepository.getSelectedRecipe(recipeId = recipe.id)
+            selectedRecipe = fullRecipe
             _uiState.update { currentState ->
                 currentState.copy(
-                    selectedRecipeName = recipe.name, selectedRecipe = fullRecipe
+                    selectedRecipeName = recipe.name, selectedRecipe = recipeToUiRecipe(fullRecipe)
+                )
+            }
+        }
+    }
+
+
+    fun updateRecipeIngredientSelectionState(
+        recipeId: Int, recipePartIndex: Int, ingredientIndex: Int, isChecked: Boolean
+    ) {
+        viewModelScope.launch {
+            recipeIngredientStatusMap[Triple(recipeId, recipePartIndex, ingredientIndex)] =
+                isChecked
+            _uiState.update { currentState ->
+                currentState.copy(
+                    selectedRecipe = recipeToUiRecipe(selectedRecipe ?: return@launch)
+                )
+            }
+        }
+    }
+
+    fun updateRecipeInstructionSelectionState(
+        recipeId: Int, recipePartIndex: Int, instructionIndex: Int, isChecked: Boolean
+    ) {
+        viewModelScope.launch {
+            recipeInstructionStatusMap[Triple(recipeId, recipePartIndex, instructionIndex)] =
+                isChecked
+            _uiState.update { currentState ->
+                currentState.copy(
+                    selectedRecipe = recipeToUiRecipe(selectedRecipe ?: return@launch)
                 )
             }
         }

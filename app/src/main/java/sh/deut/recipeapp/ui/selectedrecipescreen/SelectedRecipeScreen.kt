@@ -1,7 +1,6 @@
 package sh.deut.recipeapp.ui.selectedrecipescreen
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,21 +38,19 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import kotlinx.coroutines.launch
 import sh.deut.recipeapp.R
 import sh.deut.recipeapp.data.PartialRecipe
-import sh.deut.recipeapp.data.Recipe
 import sh.deut.recipeapp.data.cookTimeFormater
-import sh.deut.recipeapp.data.getFullRecipeFromJsonFile
 import sh.deut.recipeapp.ui.RecipeViewModel
-import kotlinx.coroutines.launch
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 @Composable
 fun SelectedRecipeScreen(
-    recipeViewModel: RecipeViewModel = viewModel(),
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(8.dp),
+    recipeViewModel: RecipeViewModel = viewModel(),
+    contentPadding: PaddingValues = PaddingValues(8.dp)
 ) {
     val recipeUiState by recipeViewModel.uiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
@@ -80,7 +77,8 @@ fun SelectedRecipeScreen(
         )
 
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current).crossfade(500).data(recipe.imgUrl).build(),
+            model = ImageRequest.Builder(LocalContext.current).crossfade(500).data(recipe.imgUrl)
+                .build(),
             contentDescription = stringResource(R.string.recipe_image_content_desc),
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -88,7 +86,7 @@ fun SelectedRecipeScreen(
                 .background(Color.LightGray)
                 .size(220.dp)
                 .padding(horizontal = dimensionResource(R.dimen.padding_small)),
-            )
+        )
 
         Row(
             modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
@@ -127,7 +125,18 @@ fun SelectedRecipeScreen(
         HorizontalPager(
             state = pagerState
         ) { page ->
-            RecipePartScreen(recipePart = recipe.recipeParts[page])
+            RecipePartTab(
+                recipePart = recipe.recipeParts[page],
+                onIngredientCheckedChanged = { isChecked, inIndex ->
+                    recipeViewModel.updateRecipeIngredientSelectionState(
+                        recipe.id, pagerState.currentPage, inIndex, isChecked
+                    )
+                },
+                onInstructionCheckedChanged = { isChecked, insIndex ->
+                    recipeViewModel.updateRecipeInstructionSelectionState(
+                        recipe.id, pagerState.currentPage, insIndex, isChecked
+                    )
+                })
 
         }
 
@@ -170,5 +179,5 @@ fun SelectedRecipeScreenPreview() {
     recipeViewModel.updateSelectedRecipe(
         recipe = PartialRecipe(1, "Pumpkin Pie", "", 30.toDuration(DurationUnit.MINUTES), 11)
     )
-    SelectedRecipeScreen(recipeViewModel)
+    SelectedRecipeScreen(Modifier, recipeViewModel)
 }
