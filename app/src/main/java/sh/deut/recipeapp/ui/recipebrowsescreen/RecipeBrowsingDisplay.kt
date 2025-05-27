@@ -47,8 +47,8 @@ import kotlin.time.toDuration
 
 @Composable
 fun RecipeBrowsingScreen(
-    recipeViewModel: RecipeViewModel = viewModel(),
     modifier: Modifier = Modifier,
+    recipeViewModel: RecipeViewModel = viewModel(),
     contentPadding: PaddingValues = PaddingValues(8.dp),
     recipeOnClick: (PartialRecipe) -> Unit,
 ) {
