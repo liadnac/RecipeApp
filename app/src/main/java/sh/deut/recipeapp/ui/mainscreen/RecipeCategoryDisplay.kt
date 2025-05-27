@@ -57,9 +57,9 @@ import sh.deut.recipeapp.ui.RecipeViewModel
 
 @Composable
 fun CategoryDisplayScreen(
+    modifier: Modifier = Modifier,
     recipeViewModel: RecipeViewModel = viewModel(),
     subCategoryOnClick: (SubCategory) -> Unit,
-    modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(4.dp),
 ) {
     val recipeUiState by recipeViewModel.uiState.collectAsState()
@@ -193,7 +193,8 @@ fun SubCategoryList(
                 Text(
                     subCategory.name,
                     textAlign = TextAlign.Left,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }, onClick = { subCategoryOnClick(subCategory) }, modifier = Modifier.padding(
                 dimensionResource(id = R.dimen.padding_medium)
