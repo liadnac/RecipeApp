@@ -4,9 +4,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,67 +26,71 @@ import sh.deut.recipeapp.ui.selectedrecipescreen.SelectedRecipeScreen
 fun RecipeApp(
     modifier: Modifier = Modifier,
 ) {
-    val navController = rememberNavController()
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = Destination.valueOf(
-        backStackEntry?.destination?.route ?: Destination.Start.name
-    )
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    val recipeViewModel: RecipeViewModel = viewModel(factory = RecipeViewModel.Factory)
-    recipeViewModel.initializeCategories()
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
 
-    Scaffold(
-        topBar = {
-            RecipeTopBar(
-                scrollBehavior = scrollBehavior,
-                canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() },
-                searchOnClick = {},
-                menuOnClick = {}
-            )
+
+        val navController = rememberNavController()
+        val backStackEntry by navController.currentBackStackEntryAsState()
+        val currentScreen = Destination.valueOf(
+            backStackEntry?.destination?.route ?: Destination.Start.name
+        )
+        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+        val recipeViewModel: RecipeViewModel = viewModel(factory = RecipeViewModel.Factory)
+        recipeViewModel.initializeCategories()
+
+        Scaffold(
+            topBar = {
+                RecipeTopBar(
+                    scrollBehavior = scrollBehavior,
+                    canNavigateBack = navController.previousBackStackEntry != null,
+                    navigateUp = { navController.navigateUp() },
+                    searchOnClick = {},
+                    menuOnClick = {}
+                )
+            }
+        ) { contentPadding ->
+            NavHost(
+                navController = navController,
+                startDestination = Destination.Start.name,
+                modifier = modifier,
+            ) {
+                composable(route = Destination.Start.name) {
+                    CategoryDisplayScreen(
+                        recipeViewModel = recipeViewModel,
+                        subCategoryOnClick = { subCategory ->
+                            recipeViewModel.subcategorySelected(subCategory)
+                            navController.navigate(Destination.RecipeBrowsing.name)
+                        },
+                        contentPadding = contentPadding,
+                        modifier = Modifier
+                    )
+                }
+
+                composable(route = Destination.RecipeBrowsing.name) {
+                    RecipeBrowsingScreen(
+                        recipeViewModel = recipeViewModel,
+                        modifier = Modifier,
+                        contentPadding = contentPadding,
+                        recipeOnClick = { recipe ->
+                            recipeViewModel.updateSelectedRecipe(
+                                recipe = recipe,
+                            )
+                            navController.navigate(Destination.SelectedRecipe.name)
+                        }
+                    )
+                }
+
+                composable(route = Destination.SelectedRecipe.name) {
+                    SelectedRecipeScreen(
+                        recipeViewModel = recipeViewModel,
+                        modifier = Modifier,
+                        contentPadding = contentPadding,
+                    )
+                }
+            }
+
+
         }
-    ) { contentPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = Destination.Start.name,
-            modifier = modifier,
-        ) {
-            composable(route = Destination.Start.name) {
-                CategoryDisplayScreen(
-                    recipeViewModel = recipeViewModel,
-                    subCategoryOnClick = { subCategory ->
-                        recipeViewModel.subcategorySelected(subCategory)
-                        navController.navigate(Destination.RecipeBrowsing.name)
-                    },
-                    contentPadding = contentPadding,
-                    modifier = Modifier
-                )
-            }
-
-            composable(route = Destination.RecipeBrowsing.name) {
-                RecipeBrowsingScreen(
-                    recipeViewModel = recipeViewModel,
-                    modifier = Modifier,
-                    contentPadding = contentPadding,
-                    recipeOnClick = { recipe ->
-                        recipeViewModel.updateSelectedRecipe(
-                            recipe = recipe,
-                        )
-                        navController.navigate(Destination.SelectedRecipe.name)
-                    }
-                )
-            }
-
-            composable(route = Destination.SelectedRecipe.name) {
-                SelectedRecipeScreen(
-                    recipeViewModel = recipeViewModel,
-                    modifier = Modifier,
-                    contentPadding = contentPadding,
-                )
-            }
-        }
-
-
     }
 }
 
