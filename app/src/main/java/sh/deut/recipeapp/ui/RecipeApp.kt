@@ -1,5 +1,7 @@
 package sh.deut.recipeapp.ui
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
@@ -52,7 +54,11 @@ fun RecipeApp(
             NavHost(
                 navController = navController,
                 startDestination = Destination.Start.name,
-                modifier = modifier,
+                enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(250)) },
+                exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(250)) },
+                popEnterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(250)) },
+                popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(250)) },
+                        modifier = modifier,
             ) {
                 composable(route = Destination.Start.name) {
                     CategoryDisplayScreen(
