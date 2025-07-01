@@ -29,8 +29,6 @@ fun RecipeApp(
     modifier: Modifier = Modifier,
 ) {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-
-
         val navController = rememberNavController()
         val backStackEntry by navController.currentBackStackEntryAsState()
         val currentScreen = Destination.valueOf(
@@ -47,28 +45,39 @@ fun RecipeApp(
                     canNavigateBack = navController.previousBackStackEntry != null,
                     navigateUp = { navController.navigateUp() },
                     searchOnClick = {},
-                    menuOnClick = {}
-                )
-            }
-        ) { contentPadding ->
+                    menuOnClick = {})
+            }) { contentPadding ->
             NavHost(
                 navController = navController,
                 startDestination = Destination.Start.name,
-                enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(250)) },
-                exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(250)) },
-                popEnterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(250)) },
-                popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(250)) },
-                        modifier = modifier,
+                enterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Start, tween(250)
+                    )
+                },
+                exitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Start, tween(250)
+                    )
+                },
+                popEnterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.End, tween(250)
+                    )
+                },
+                popExitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.End, tween(250)
+                    )
+                },
+                modifier = modifier,
             ) {
                 composable(route = Destination.Start.name) {
                     CategoryDisplayScreen(
-                        recipeViewModel = recipeViewModel,
-                        subCategoryOnClick = { subCategory ->
+                        recipeViewModel = recipeViewModel, subCategoryOnClick = { subCategory ->
                             recipeViewModel.subcategorySelected(subCategory)
                             navController.navigate(Destination.RecipeBrowsing.name)
-                        },
-                        contentPadding = contentPadding,
-                        modifier = Modifier
+                        }, contentPadding = contentPadding, modifier = Modifier
                     )
                 }
 
@@ -82,8 +91,7 @@ fun RecipeApp(
                                 recipe = recipe,
                             )
                             navController.navigate(Destination.SelectedRecipe.name)
-                        }
-                    )
+                        })
                 }
 
                 composable(route = Destination.SelectedRecipe.name) {

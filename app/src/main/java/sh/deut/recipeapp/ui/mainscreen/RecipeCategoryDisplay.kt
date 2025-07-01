@@ -5,26 +5,24 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -34,8 +32,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -64,7 +62,7 @@ fun CategoryDisplayScreen(
 ) {
     val recipeUiState by recipeViewModel.uiState.collectAsState()
     val categoryList = recipeUiState.categoryList
-    CategoryGrid(
+    CategoryList(
         categoryCardStateList = categoryList,
         subCategoryOnClick = subCategoryOnClick,
         modifier = modifier,
@@ -74,20 +72,17 @@ fun CategoryDisplayScreen(
 
 
 @Composable
-fun CategoryGrid(
+fun CategoryList(
     categoryCardStateList: List<CategoryCardState>,
     subCategoryOnClick: (SubCategory) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(4.dp),
 ) {
 
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 144.dp),
+    LazyColumn(
         modifier = modifier.padding(horizontal = 4.dp),
         contentPadding = contentPadding,
-        horizontalArrangement = Arrangement.SpaceAround,
-
-        ) {
+    ) {
         items(categoryCardStateList) { category ->
             CategoryCard(
                 category = category, modifier = Modifier, subCategoryOnClick = subCategoryOnClick
@@ -108,70 +103,65 @@ fun CategoryCard(
     val rotationState by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f, label = ""
     )
-    var cardWidth by remember { mutableStateOf(0.dp) }
-    val density = LocalDensity.current
 
 
     Card(
         modifier = modifier
             .padding(dimensionResource(id = R.dimen.padding_medium))
             .fillMaxWidth()
-            .animateContentSize()
-            .onGloballyPositioned { coordinates ->
-                val widthPx = coordinates.size.width
-                cardWidth = with(density) { widthPx.toDp() }
-            },
+            .clip(RoundedCornerShape(16.dp))
+            .animateContentSize(),
         onClick = { expanded = !expanded },
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
 
         ) {
-            Box {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current).crossfade(500)
-                        .data(category.category.imgUrl).build(),
-                    placeholder = painterResource(R.drawable.baking),
-                    contentDescription = "An image of the category",
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.alpha(0.7f)
-                )
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current).crossfade(500)
+                    .data(category.category.imgUrl).build(),
+                placeholder = painterResource(R.drawable.baking),
+                contentDescription = "An image of the category",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .alpha(0.7f)
+                    .clip(RoundedCornerShape(16.dp))
+            )
+            Row(
+                modifier = Modifier,
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(248.dp)
+            ) {
                 Text(
                     category.category.name,
                     style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier
-                        .padding(dimensionResource(id = R.dimen.padding_small))
-                        .align(Alignment.BottomCenter),
+                    modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)),
                     textAlign = TextAlign.Center,
-                    color = Color.DarkGray
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
 
                 )
+                IconButton(modifier = Modifier
+                    .alpha(0.2f)
+                    .rotate(rotationState), onClick = {
+                    expanded = !expanded
+                }) {
+                    Icon(
+                        Icons.Filled.KeyboardArrowDown,
+                        contentDescription = "Show more",
+                    )
+                }
             }
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier.width(cardWidth)
-            ) {
+            if (expanded) {
                 SubCategoryList(
                     subCategoryList = category.category.subcategoryList,
                     subCategoryOnClick = subCategoryOnClick,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .background(MaterialTheme.colorScheme.secondaryContainer)
                 )
             }
-            IconButton(modifier = Modifier
-                .alpha(0.2f)
-                .rotate(rotationState), onClick = {
-                expanded = !expanded
-            }) {
-                Icon(
-                    Icons.Filled.KeyboardArrowDown,
-                    contentDescription = "Show more",
-                )
-            }
-
 
         }
     }
@@ -188,22 +178,25 @@ fun SubCategoryList(
         modifier, horizontalAlignment = Alignment.CenterHorizontally
     ) {
         subCategoryList.forEach { subCategory ->
-            DropdownMenuItem(
-                text = {
-                Text(
-                    subCategory.name,
-                    textAlign = TextAlign.Left,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }, onClick = { subCategoryOnClick(subCategory) }, modifier = Modifier.padding(
-                dimensionResource(id = R.dimen.padding_medium)
-            )
-            )
             HorizontalDivider()
+            Row(
+                modifier = Modifier
+            ) {
+                TextButton(
+                    onClick = { subCategoryOnClick(subCategory) }, modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
+                ) {
+                    Text(
+                        subCategory.name,
+                        textAlign = TextAlign.Left,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                }
+            }
         }
     }
 }
+
 
 val pancake: SubCategory = SubCategory(1, "Pancakes")
 val popsicle: SubCategory = SubCategory(2, "Popsicles")
@@ -243,7 +236,7 @@ fun CategoryGridPreview() {
             false,
         ), CategoryCardState(Category(2, "test2", "", listOf(SubCategory(15, "pancake"))), false)
     )
-    CategoryGrid(
+    CategoryList(
         subCategoryOnClick = {},
         contentPadding = PaddingValues(4.dp),
         categoryCardStateList = categoryCardStateList,
