@@ -4,10 +4,10 @@ package sh.deut.recipeapp.ui.mainscreen
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -35,9 +35,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -115,25 +113,21 @@ fun CategoryCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth()
-
-        ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current).crossfade(500)
-                    .data(category.category.imgUrl).build(),
-                placeholder = painterResource(R.drawable.baking),
-                contentDescription = "An image of the category",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .alpha(0.7f)
-                    .clip(RoundedCornerShape(16.dp))
-            )
+        Column {
             Row(
-                modifier = Modifier,
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(248.dp)
+                modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom
+
             ) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current).crossfade(500)
+                        .data(category.category.imgUrl).build(),
+                    placeholder = painterResource(R.drawable.baking),
+                    contentDescription = "An image of the category",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .alpha(0.7f)
+                        .weight(0.3f)
+                )
                 Text(
                     category.category.name,
                     style = MaterialTheme.typography.headlineMedium,
@@ -142,11 +136,13 @@ fun CategoryCard(
                     color = MaterialTheme.colorScheme.onPrimaryContainer
 
                 )
-                IconButton(modifier = Modifier
-                    .alpha(0.2f)
-                    .rotate(rotationState), onClick = {
-                    expanded = !expanded
-                }) {
+                Spacer(modifier = Modifier.weight(0.25f))
+                IconButton(
+                    modifier = Modifier
+                        .alpha(0.2f)
+                        .rotate(rotationState), onClick = {
+                        expanded = !expanded
+                    }) {
                     Icon(
                         Icons.Filled.KeyboardArrowDown,
                         contentDescription = "Show more",
@@ -183,7 +179,8 @@ fun SubCategoryList(
                 modifier = Modifier
             ) {
                 TextButton(
-                    onClick = { subCategoryOnClick(subCategory) }, modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
+                    onClick = { subCategoryOnClick(subCategory) },
+                    modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
                 ) {
                     Text(
                         subCategory.name,
