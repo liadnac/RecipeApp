@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -126,7 +127,7 @@ fun CategoryCard(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .alpha(0.7f)
-                        .weight(0.3f)
+                        .width(108.dp)
                 )
                 Text(
                     category.category.name,
