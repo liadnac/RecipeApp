@@ -182,7 +182,7 @@ fun RecipeBrowsingGridPreview() {
         subcategoryName = "Pancakes",
         subcategoryRecipes = listOf(
             PartialRecipe(
-            11, "Choco pancake", "", 30.toDuration(DurationUnit.MINUTES),
+            11, "Choco pancake", "https://recipeapp.deut.sh/static/RecipeImages/crustlessVeggieQuiche.jpg", 30.toDuration(DurationUnit.MINUTES),
                 subcategoryId = 12
             ),
             PartialRecipe(

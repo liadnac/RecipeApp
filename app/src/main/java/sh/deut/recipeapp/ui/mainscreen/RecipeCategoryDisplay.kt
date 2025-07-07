@@ -4,11 +4,14 @@ package sh.deut.recipeapp.ui.mainscreen
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,7 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -175,21 +177,21 @@ fun SubCategoryList(
         modifier, horizontalAlignment = Alignment.CenterHorizontally
     ) {
         subCategoryList.forEach { subCategory ->
-            HorizontalDivider()
+            HorizontalDivider(color = MaterialTheme.colorScheme.onSecondaryContainer)
             Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = { subCategoryOnClick(subCategory) })
+                    .height(56.dp),
             ) {
-                TextButton(
-                    onClick = { subCategoryOnClick(subCategory) },
-                    modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
-                ) {
-                    Text(
-                        subCategory.name,
-                        textAlign = TextAlign.Left,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
-                }
+                Text(
+                    subCategory.name,
+                    textAlign = TextAlign.Left,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
             }
         }
     }
