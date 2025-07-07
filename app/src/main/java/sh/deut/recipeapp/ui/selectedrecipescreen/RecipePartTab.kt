@@ -1,5 +1,6 @@
 package sh.deut.recipeapp.ui.selectedrecipescreen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -128,7 +129,10 @@ fun RowWithCheckbox(
     rowNumber: Int? = null
 ) {
     Row(
-        modifier = modifier,
+        modifier = modifier.clickable(
+            onClick = { onCheckedChanged(isChecked.not()) },
+
+            ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Checkbox(
@@ -150,6 +154,7 @@ fun RowWithCheckbox(
             color = if (isChecked) Color.Gray else MaterialTheme.colorScheme.onBackground
 
         )
+
 
     }
 }
