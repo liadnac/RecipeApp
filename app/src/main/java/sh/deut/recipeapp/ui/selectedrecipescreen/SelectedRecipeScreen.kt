@@ -40,9 +40,13 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import kotlinx.coroutines.launch
 import sh.deut.recipeapp.R
-import sh.deut.recipeapp.data.PartialRecipe
+import sh.deut.recipeapp.data.CookTime
 import sh.deut.recipeapp.data.cookTimeFormater
 import sh.deut.recipeapp.ui.RecipeViewModel
+import sh.deut.recipeapp.ui.UiIngredient
+import sh.deut.recipeapp.ui.UiInstruction
+import sh.deut.recipeapp.ui.UiRecipe
+import sh.deut.recipeapp.ui.UiRecipePart
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -53,8 +57,35 @@ fun SelectedRecipeScreen(
     contentPadding: PaddingValues = PaddingValues(8.dp)
 ) {
     val recipeUiState by recipeViewModel.uiState.collectAsState()
-    val coroutineScope = rememberCoroutineScope()
     val recipe = recipeUiState.selectedRecipe ?: return
+    SelectedRecipeLayout(
+        modifier,
+        recipe,
+        { recipeId: Int, recipePartIndex: Int, ingredientIndex: Int, isChecked: Boolean ->
+            recipeViewModel.updateRecipeIngredientSelectionState(
+                recipeId, recipePartIndex, ingredientIndex, isChecked
+            )
+        },
+        { recipeId: Int, recipePartIndex: Int, instructionIndex: Int, isChecked: Boolean ->
+            recipeViewModel.updateRecipeInstructionSelectionState(
+                recipeId, recipePartIndex, instructionIndex, isChecked
+            )
+        },
+        contentPadding
+    )
+
+}
+
+
+@Composable
+fun SelectedRecipeLayout(
+    modifier: Modifier = Modifier,
+    recipe: UiRecipe,
+    updateRecipeIngredientSelectionState: (recipeId: Int, recipePartIndex: Int, ingredientIndex: Int, isChecked: Boolean) -> Unit,
+    updateRecipeInstructionSelectionState: (recipeId: Int, recipePartIndex: Int, instructionIndex: Int, isChecked: Boolean) -> Unit,
+    contentPadding: PaddingValues = PaddingValues(8.dp)
+) {
+    val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { recipe.recipeParts.size })
     Column(
         modifier = modifier
@@ -128,19 +159,16 @@ fun SelectedRecipeScreen(
             RecipePartTab(
                 recipePart = recipe.recipeParts[page],
                 onIngredientCheckedChanged = { isChecked, inIndex ->
-                    recipeViewModel.updateRecipeIngredientSelectionState(
+                    updateRecipeIngredientSelectionState(
                         recipe.id, pagerState.currentPage, inIndex, isChecked
                     )
                 },
                 onInstructionCheckedChanged = { isChecked, insIndex ->
-                    recipeViewModel.updateRecipeInstructionSelectionState(
+                    updateRecipeInstructionSelectionState(
                         recipe.id, pagerState.currentPage, insIndex, isChecked
                     )
                 })
-
         }
-
-
     }
 }
 
@@ -175,9 +203,29 @@ fun IconAndTextColumn(
 @Composable
 fun SelectedRecipeScreenPreview() {
     val context = LocalContext.current
-    val recipeViewModel: RecipeViewModel = viewModel()
-    recipeViewModel.updateSelectedRecipe(
-        recipe = PartialRecipe(1, "Pumpkin Pie", "", 30.toDuration(DurationUnit.MINUTES), 11)
+    val recipe = UiRecipe(
+        888,
+        "Example",
+        "",
+        "Just an example",
+        CookTime(30.toDuration(DurationUnit.MINUTES), 45.toDuration(DurationUnit.MINUTES)),
+        listOf(
+            UiRecipePart(
+                "A", listOf(UiIngredient("flour"), UiIngredient("egg")), listOf(
+                    UiInstruction("mix"), UiInstruction("form")
+                )
+            ), UiRecipePart(
+                "B", listOf(UiIngredient("flour"), UiIngredient("egg")), listOf(
+                    UiInstruction("mix"), UiInstruction("form")
+                )
+            )
+        ),
+        11
     )
-    SelectedRecipeScreen(Modifier, recipeViewModel)
+
+    SelectedRecipeLayout(
+        Modifier,
+        recipe,
+        { _: Int, _: Int, _: Int, _: Boolean -> },
+        { _: Int, _: Int, _: Int, _: Boolean -> })
 }
