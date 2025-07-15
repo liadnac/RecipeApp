@@ -48,12 +48,15 @@ class RecipeViewModel(
     }
 
     fun subcategorySelected(subCategory: SubCategory) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                subcategoryName = subCategory.name
-            )
+        if (selectedSubCategory != subCategory) {
+            _uiState.update { currentState ->
+                currentState.copy(
+                    subcategoryName = subCategory.name,
+                    subcategoryRecipes = emptyList(),
+                )
+            }
+            selectedSubCategory = subCategory
         }
-        selectedSubCategory = subCategory
     }
 
     fun initializeRecipes() {
@@ -99,13 +102,16 @@ class RecipeViewModel(
     }
 
     fun updateSelectedRecipe(recipe: PartialRecipe) {
-        viewModelScope.launch {
-            val fullRecipe = recipeRepository.getSelectedRecipe(recipeId = recipe.id)
-            selectedRecipe = fullRecipe
-            _uiState.update { currentState ->
-                currentState.copy(
-                    selectedRecipeName = recipe.name, selectedRecipe = recipeToUiRecipe(fullRecipe)
-                )
+        if (selectedRecipe?.id != recipe.id) {
+            viewModelScope.launch {
+                val fullRecipe = recipeRepository.getSelectedRecipe(recipeId = recipe.id)
+                selectedRecipe = fullRecipe
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        selectedRecipeName = recipe.name,
+                        selectedRecipe = recipeToUiRecipe(fullRecipe)
+                    )
+                }
             }
         }
     }
