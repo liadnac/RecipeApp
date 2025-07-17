@@ -1,7 +1,6 @@
 package sh.deut.recipeapp.ui.selectedrecipescreen
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,9 +11,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
@@ -23,17 +23,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.constrain
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
@@ -75,7 +81,26 @@ fun SelectedRecipeScreen(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+fun Modifier.onMeasureConstraints(
+    block: (Constraints) -> Unit
+) = layout { measurable, constraints ->
+    // record the constraints *before* measuring so that they're available during recursive measurement
+    block(constraints)
+    val placeable = measurable.measure(constraints)
+    layout(placeable.width, placeable.height) {
+        placeable.place(0, 0)
+    }
+}
+
+fun Modifier.constrainSize(
+    getConstraints: () -> Constraints
+) = layout { measurable, constraints ->
+    val placeable = measurable.measure(constraints.constrain(getConstraints()))
+    layout(placeable.width, placeable.height) {
+        placeable.place(0, 0)
+    }
+}
+
 @Composable
 fun SelectedRecipeLayout(
     modifier: Modifier = Modifier,
@@ -86,60 +111,65 @@ fun SelectedRecipeLayout(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { recipe.recipeParts.size })
+    var constraints by remember { mutableStateOf(Constraints()) }
 
-    LazyColumn(
+    Column(
         modifier = modifier
             .padding(contentPadding)
-            .fillMaxSize(),
+            .fillMaxSize()
+            .onMeasureConstraints { constraints = it }
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small)),
         horizontalAlignment = Alignment.Start
     ) {
-        item {
-            Text(
-                text = recipe.name,
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_small))
+        Text(
+            text = recipe.name,
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_small))
+        )
+
+        Text(
+            text = recipe.description,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
+        )
+
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current).crossfade(500)
+                .data(recipe.imgUrl).build(),
+            contentDescription = stringResource(R.string.recipe_image_content_desc),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.LightGray)
+                .size(220.dp)
+                .padding(horizontal = dimensionResource(R.dimen.padding_small)),
+        )
+
+        Row(
+            modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconAndTextColumn(
+                title = "Total time",
+                icon = R.drawable.clock_svgrepo_com,
+                iconDescription = stringResource(R.string.clock_icon),
+                mainText = cookTimeFormater(recipe.cookTime.readyIn)
+            )
+            IconAndTextColumn(
+                title = "Prep time",
+                icon = R.drawable.hat_chef_svgrepo_com,
+                iconDescription = stringResource(R.string.prep_icon),
+                mainText = cookTimeFormater(recipe.cookTime.handsOn)
             )
 
-            Text(
-                text = recipe.description,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
-            )
-
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current).crossfade(500)
-                    .data(recipe.imgUrl).build(),
-                contentDescription = stringResource(R.string.recipe_image_content_desc),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.LightGray)
-                    .size(220.dp)
-                    .padding(horizontal = dimensionResource(R.dimen.padding_small)),
-            )
-
-            Row(
-                modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconAndTextColumn(
-                    title = "Total time",
-                    icon = R.drawable.clock_svgrepo_com,
-                    iconDescription = stringResource(R.string.clock_icon),
-                    mainText = cookTimeFormater(recipe.cookTime.readyIn)
-                )
-                IconAndTextColumn(
-                    title = "Prep time",
-                    icon = R.drawable.hat_chef_svgrepo_com,
-                    iconDescription = stringResource(R.string.prep_icon),
-                    mainText = cookTimeFormater(recipe.cookTime.handsOn)
-                )
-
-            }
         }
 
-        stickyHeader {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainSize { constraints }
+        ) {
             TabRow(
                 selectedTabIndex = pagerState.currentPage, modifier = Modifier
             ) {
@@ -161,15 +191,14 @@ fun SelectedRecipeLayout(
                     )
                 }
             }
-        }
 
-        item {
             HorizontalPager(
                 state = pagerState,
                 verticalAlignment = Alignment.Top,
                 modifier = Modifier.fillMaxWidth()
             ) { page ->
                 RecipePartTab(
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
                     recipePart = recipe.recipeParts[page],
                     onIngredientCheckedChanged = { isChecked, inIndex ->
                         updateRecipeIngredientSelectionState(
