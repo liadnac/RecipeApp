@@ -29,7 +29,9 @@ android {
             isDebuggable = true
         }
         release {
-            buildConfigField("String", "BASE_URL", "\"https://recipeapp.deut.sh\"")
+            // SSL temporarily disabled due to Cloudflare certificate issues
+            // TODO: re-enable SSL when it is fixed
+            buildConfigField("String", "BASE_URL", "\"http://recipeapp.deut.sh\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
